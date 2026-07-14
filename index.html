@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بالإسلام نهتدي | تطبيق حفظ القرآن والحديث لكل الأعمار</title>
+  <meta name="description" content="تطبيق تفاعلي حديث وسهل لمساعدتك ومساعدة أطفالك وكبار السن والأميين على حفظ القرآن الكريم والأحاديث النبوية مع التفاسير والتلقين التلقائي.">
+  
+  <!-- Content Security Policy (CSP) for High-Level Security -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https://api.alquran.cloud https://cdn.islamic.network;
+    media-src 'self' blob: https://cdn.islamic.network;
+    img-src 'self' data:;
+  ">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mode-child">
+
+  <div class="app-container">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo-container" dir="ltr">
+        <div class="logo-icon" style="overflow: hidden; border: none; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.25);">
+          <img src="logo.jpg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="logo-text">
+          <h1 style="font-size: 1.1rem; letter-spacing: 0;">بالإسلام نهتدي</h1>
+          <span style="font-size: 0.65rem;">لكل الأعمار وفئات التعلم</span>
+        </div>
+      </div>
+
+      <!-- User Persona Mode Switcher -->
+      <div class="user-mode-selector" style="margin-bottom: 24px; background: var(--bg-tertiary); padding: 10px; border-radius: 14px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; display: block; font-weight: 700; letter-spacing: 0.5px;">اختر فئة المستخدم 👤</span>
+        <div style="display: flex; gap: 4px;">
+          <button class="mode-select-btn active" data-mode="child" title="الأطفال: ألوان تشجيعية وألعاب" style="flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 0.75rem; border: none; cursor: pointer; font-weight: 700; background: var(--color-emerald); color: white; transition: var(--transition-fast);">👶 طفل</button>
+          <button class="mode-select-btn" data-mode="literate" title="الكبار القارئ: قراءة ميسرة وتفسير الآيات" style="flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 0.75rem; border: none; cursor: pointer; font-weight: 700; background: var(--bg-primary); color: var(--text-secondary); transition: var(--transition-fast);">📚 قارئ</button>
+          <button class="mode-select-btn" data-mode="illiterate" title="المستمع: سماع وتلقين وترديد للأمي" style="flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 0.75rem; border: none; cursor: pointer; font-weight: 700; background: var(--bg-primary); color: var(--text-secondary); transition: var(--transition-fast);">👂 سماع</button>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <li class="nav-item active" data-view="dashboard">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+            </svg>
+            <span id="nav-dashboard-label">الرئيسية والحديث</span>
+          </a>
+        </li>
+        <li class="nav-item" data-view="reader">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span id="nav-reader-label">المصحف والمعلّم</span>
+          </a>
+        </li>
+        <li class="nav-item" data-view="planner" id="nav-planner-item">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>مخطط الحفظ 📅</span>
+          </a>
+        </li>
+
+        <li class="nav-item" data-view="settings">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>الإعدادات ⚙️</span>
+          </a>
+        </li>
+      </nav>
+
+      <div class="user-profile">
+        <div class="user-avatar" id="header-user-avatar">👦</div>
+        <div class="user-info">
+          <div class="user-name">بطل الحفظ</div>
+          <div class="user-rank" id="header-user-rank">مبتدئ الحفظ 🌱</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- 1. DASHBOARD VIEW -->
+      <section class="view-section active" id="view-dashboard">
+        <div class="page-header">
+          <div class="page-title">
+            <h2 id="dashboard-title">لوحة التحكم والحديث الشريف 🕋</h2>
+            <p id="dashboard-subtitle">أهلاً بك يا بطل الحفظ! تذكر أن كل حرف تقرؤه لك به حسنات كثيرة 🌟</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="stat-details">
+              <h4>حفظك الكلي 🏆</h4>
+              <span id="stat-progress-percent">0%</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon gold">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div class="stat-details">
+              <h4>نشاطك المتتالي 🔥</h4>
+              <span id="stat-streak-days">0 يوم</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <div class="stat-details">
+              <h4>تحت الحفظ ⏳</h4>
+              <span id="stat-memorizing-count">0 آية</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon red">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <div class="stat-details">
+              <h4>أتممت حفظها 🎉</h4>
+              <span id="stat-memorized-count">0 آية</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-subgrid">
+          <!-- Hadith & Quran values Carousel Panel -->
+          <div class="card-panel">
+            <div class="panel-header">
+              <h3 style="font-size: 1.25rem;">
+                🌸 أحاديث وقيم تربوية صحيحة
+              </h3>
+              <button class="action-btn" id="next-hadith-btn" style="padding: 4px 12px; font-size: 0.8rem;">
+                الحديث التالي ➡️
+              </button>
+            </div>
+            <div class="daily-verse-box" id="hadith-display-panel" style="background: linear-gradient(135deg, rgba(217, 119, 6, 0.08), rgba(16, 185, 129, 0.03)); border-color: rgba(217, 119, 6, 0.25);">
+              <p class="daily-verse-arabic" id="db-hadith-text" style="font-size: 1.5rem; line-height: 1.9; color: var(--text-primary);"></p>
+              <div class="daily-verse-ref" id="db-hadith-source" style="margin-bottom: 12px; font-weight: 700;"></div>
+              
+              <!-- Kid friendly explanation -->
+              <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; font-size: 0.9rem; text-align: right; color: var(--text-secondary); line-height: 1.5; border-right: 4px solid var(--color-emerald);" id="db-hadith-explanation"></div>
+            </div>
+          </div>
+
+          <!-- Daily Verse Card -->
+          <div class="card-panel">
+            <div class="panel-header">
+              <h3>
+                ⚡ آية اليوم للحفظ والتدبّر
+              </h3>
+            </div>
+            <div class="daily-verse-box">
+              <p class="daily-verse-arabic" id="db-daily-arabic">«إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ»</p>
+              <p class="daily-verse-translation" id="db-daily-english">"Indeed, this Qur'an guides to that which is most suitable"</p>
+              <div class="daily-verse-ref" id="db-daily-ref">سورة الإسراء - آية 9</div>
+              
+              <div style="display: flex; gap: 8px; justify-content: center; margin-top: 16px;">
+                <button class="action-btn active" id="db-play-daily-btn" style="padding: 10px 20px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  استمع 🔊
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Panel -->
+          <div class="card-panel">
+            <div class="panel-header">
+              <h3>
+                🕒 نشاطات الحفظ والتفاعل الأخيرة
+              </h3>
+            </div>
+            <div id="db-activity-list" style="display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto; padding: 4px;">
+              <!-- Loaded dynamically via JavaScript -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. QURAN READER VIEW -->
+      <section class="view-section" id="view-reader">
+        <div class="page-header">
+          <div class="page-title">
+            <h2 id="reader-title">المصحف المعلّم والتنزيل 📖📥</h2>
+            <p id="reader-subtitle">يمكنك تحميل السورة هنا لتشغيلها والاستماع للشيخ حتى لو انقطع الإنترنت بالكامل!</p>
+          </div>
+        </div>
+
+        <div class="quran-layout">
+          <!-- Surah list sidebar inside Reader -->
+          <div class="surah-sidebar">
+            <div class="search-box">
+              <div class="search-input-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" class="search-input" id="surah-search" placeholder="ابحث باسم السورة (مثلاً: البقرة)...">
+              </div>
+            </div>
+            <div class="surah-list" id="reader-surah-list">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- Verses panel -->
+          <div class="verses-panel">
+            <div class="verses-header" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div class="verses-title">
+                  <h3 id="current-surah-title-header">سورة الفاتحة</h3>
+                </div>
+                <div class="verses-actions" style="gap: 8px;">
+                  <!-- Memorize Blind Recitation Mode -->
+                  <button class="action-btn" id="toggle-memorize-btn" style="padding: 10px 16px; border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
+                    <span>تسميع غيبي 🎙️</span>
+                  </button>
+                  <button class="action-btn hidden" id="memorize-mic-btn" style="padding: 10px 16px; background: linear-gradient(135deg, var(--color-emerald), #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+                    <span>ابدأ التسميع 🎙️</span>
+                  </button>
+                  <button class="action-btn hidden" id="memorize-help-btn" style="padding: 10px 14px; border-color: rgba(217, 119, 6, 0.3); color: var(--color-gold);" title="دليل الهواتف">
+                    <span>دليل الهواتف ℹ️</span>
+                  </button>
+                  <!-- View Layout Switcher (Page vs Cards) -->
+                  <button class="action-btn active" id="toggle-layout-btn" style="padding: 10px 16px; border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
+                    <span>تصفح كصفحة مصحف 📖</span>
+                  </button>
+                  <!-- Tafsir Global Toggle -->
+                  <button class="action-btn" id="toggle-global-tafsir-btn" style="padding: 10px 16px; border-color: rgba(217, 119, 6, 0.3); color: var(--color-gold);">
+                    <span>إظهار التفسير 📖</span>
+                  </button>
+                  <button class="action-btn" id="toggle-translation-btn" style="padding: 10px 16px;">
+                    <span>إظهار الترجمة</span>
+                  </button>
+                  <button class="action-btn" id="play-all-surah-btn" style="padding: 10px 16px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>قراءة السورة 🔊</span>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Offline Download Control Panel -->
+              <div id="offline-download-panel" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span id="download-status-icon">📥</span>
+                  <span id="download-status-text" style="font-size: 0.85rem; font-weight: 500;">هذه السورة غير متوفرة أوفلاين.</span>
+                </div>
+                
+                <div style="display: flex; gap: 8px;">
+                  <button class="action-btn" id="download-surah-btn" style="padding: 6px 12px; font-size: 0.8rem; background: var(--color-emerald-light); border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
+                    تحميل للاستماع بدون نت 📥
+                  </button>
+                  <button class="action-btn hidden" id="delete-download-btn" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.3); color: var(--color-danger);">
+                    حذف الملفات المحملة 🗑️
+                  </button>
+                </div>
+
+                <!-- Download Progress bar -->
+                <div id="download-progress-box" class="hidden" style="width: 100%; margin-top: 8px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">
+                    <span>جاري تحميل التلاوات...</span>
+                    <span id="download-percent-text">0%</span>
+                  </div>
+                  <div class="progress-track" style="height: 6px; cursor: default;">
+                    <div class="progress-bar" id="download-progress-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="verses-container" id="verses-display-container">
+              <!-- Dynamically loaded verses -->
+              <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
+                الرجاء اختيار سورة من القائمة لعرض الآيات...
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PLANNER VIEW -->
+      <section class="view-section" id="view-planner">
+        <div class="page-header">
+          <div class="page-title">
+            <h2>مخطط وجدول الحفظ اليومي 📅</h2>
+            <p>اصنع لنفسك أو لطفلك جدولاً لحفظ سورة معينة بسهولة خطوة بخطوة.</p>
+          </div>
+        </div>
+
+        <!-- Setup Form if no active plan -->
+        <div class="planner-setup" id="planner-setup-container">
+          <h3 style="margin-bottom: 24px; text-align: center; font-size: 1.4rem;">🎯 إنشاء خطة حفظ جديدة</h3>
+          
+          <div class="form-group">
+            <label for="plan-surah-select">السورة المراد حفظها:</label>
+            <select class="form-control" id="plan-surah-select">
+              <!-- Dynamically filled with Surahs -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="plan-daily-target">الهدف اليومي للطفل أو المبتدئ:</label>
+            <select class="form-control" id="plan-daily-target">
+              <option value="1" selected>آية واحدة يومياً (سهل وممتع للأطفال 👶)</option>
+              <option value="2">آيتان يومياً (متوسط ومناسب للمبتدئين 🌟)</option>
+              <option value="5">5 آيات يومياً (حفظ سريع 🚀)</option>
+              <option value="10">10 آيات يومياً (مكثف ومتقدم 🔥)</option>
+            </select>
+          </div>
+
+          <button class="submit-btn" id="create-plan-btn" style="padding: 16px; font-size: 1.1rem;">ابدأ الخطة المباركة 🏁</button>
+        </div>
+
+        <!-- Active Plan Panel -->
+        <div class="active-plan-panel hidden" id="active-plan-container">
+          <div class="plan-stats-box">
+            <div class="plan-title">
+              <h3 id="active-plan-title">خطة حفظ سورة البقرة</h3>
+              <p id="active-plan-subtitle">تم البدء في: --</p>
+            </div>
+            
+            <div class="plan-meta-item">
+              <span class="plan-meta-label">معدل الإنجاز 🏆:</span>
+              <span class="plan-meta-value" id="active-plan-progress-percent" style="color: var(--color-emerald)">0%</span>
+            </div>
+            <div class="plan-meta-item">
+              <span class="plan-meta-label">المعدل اليومي:</span>
+              <span class="plan-meta-value" id="active-plan-daily-rate">1 آيات/يوم</span>
+            </div>
+            <div class="plan-meta-item">
+              <span class="plan-meta-label">الأيام المقدرة للحفظ:</span>
+              <span class="plan-meta-value" id="active-plan-duration">7 يوم</span>
+            </div>
+            <div class="plan-meta-item">
+              <span class="plan-meta-label">الأيام المكتملة:</span>
+              <span class="plan-meta-value" id="active-plan-days-completed">0 من 7</span>
+            </div>
+            
+            <button class="action-btn" id="delete-plan-btn" style="border-color: var(--color-danger); color: var(--color-danger); justify-content: center; margin-top: 12px; padding: 12px;">
+              <span>إلغاء الخطة الحالية</span>
+            </button>
+          </div>
+
+          <div class="plan-checklist-box">
+            <div class="panel-header">
+              <h3>جدول مهام الحفظ اليومية 🌟</h3>
+            </div>
+            <div class="plan-checklist" id="active-plan-checklist">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. QUIZ / PRACTICE VIEW -->
+      <section class="view-section" id="view-quiz">
+        <div class="page-header">
+          <div class="page-title">
+            <h2>ألعاب واختبارات المراجعة التفاعلية 🎮</h2>
+            <p>ثبّت حفظك باللعب والتحديات الممتعة واحصل على نقاط وهدايا معنوية!</p>
+          </div>
+        </div>
+
+        <!-- Choose Quiz Mode -->
+        <div class="quiz-modes" id="quiz-modes-selector">
+          <div class="quiz-mode-card" data-mode="reveal">
+            <div class="quiz-mode-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </div>
+            <h3>لعبة كشف الكلمات المخفية (للأطفال والمبتدئين 👶)</h3>
+            <p>قم بتخمين الكلمات المخفية بالترتيب واكشفها كلمة تلو كلمة للتأكد من قوة حفظك غيباً.</p>
+            <button class="action-btn" style="margin: 0 auto; color: var(--color-emerald); padding: 12px 24px; font-size: 1rem;">ابدأ اللعب الآن 🚀</button>
+          </div>
+
+          <div class="quiz-mode-card" data-mode="connect">
+            <div class="quiz-mode-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </div>
+            <h3>تحدي ربط الآيات المتتالية (ذكي ومتقدم 🧠)</h3>
+            <p>اختر الآية التالية الصحيحة للآية المعروضة لتقوية الترابط وعدم الخلط بين السور المتشابهة.</p>
+            <button class="action-btn" style="margin: 0 auto; color: var(--color-gold); padding: 12px 24px; font-size: 1rem;">ابدأ التحدي الآن 🚀</button>
+          </div>
+
+          <div class="quiz-mode-card" data-mode="voice">
+            <div class="quiz-mode-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--color-emerald)">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </div>
+            <h3>تحدي التسميع الصوتي الذكي 🎙️ (جديد)</h3>
+            <p>اقرأ وتلو الآيات بصوتك، وسيتعرف الذكاء الاصطناعي على قراءتك ويصحح أخطاء التجويد والحفظ فوراً باللونين الأخضر والأحمر!</p>
+            <button class="action-btn" style="margin: 0 auto; color: var(--color-emerald); padding: 12px 24px; font-size: 1rem;">ابدأ التسميع الآن 🚀</button>
+          </div>
+        </div>
+
+        <!-- Quiz/Practice Interface Container -->
+        <div class="quiz-interface-box" id="quiz-interface-container">
+          <div class="quiz-header">
+            <h4 id="quiz-title-display" style="font-size: 1.25rem; font-weight: 600;">لعبة كشف الكلمات</h4>
+            <div style="display: flex; gap: 16px; align-items: center;">
+              <span id="quiz-score-display" style="font-weight: 700; font-size: 1.1rem; color: var(--color-accent)">النقاط: ⭐ 0</span>
+              <button class="action-btn" id="exit-quiz-btn" style="padding: 6px 14px; border-color: var(--color-danger); color: var(--color-danger); font-size: 0.85rem;">
+                إنهاء اللعبة
+              </button>
+            </div>
+          </div>
+
+          <!-- Mode 1: Reveal Words Box -->
+          <div id="quiz-mode-reveal-box" class="hidden">
+            <div class="quiz-question-box">
+              <div class="quiz-question-title" style="font-size: 1rem; margin-bottom: 20px;">اقرأ بصوتك واضغط على الكلمات المظللة لتكتشفها بالترتيب:</div>
+              <div class="reveal-words-container" id="reveal-words-container">
+                <!-- Dynamically loaded words -->
+              </div>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 12px;">
+              <button class="action-btn active" id="reveal-next-btn" style="padding: 14px 28px; font-size: 1.05rem;">كشف الكلمة التالية 🔍</button>
+              <button class="action-btn" id="reveal-restart-btn" style="padding: 14px 28px;">إعادة المحاولة 🔁</button>
+            </div>
+          </div>
+
+          <!-- Mode 2: Connect Ayahs Box -->
+          <div id="quiz-mode-connect-box" class="hidden">
+            <div class="quiz-question-box">
+              <div class="quiz-question-title">ما هي الآية التالية للآية الكريمة؟ 🤔</div>
+              <div class="quiz-question-arabic" id="connect-question-ayah">
+                «الحمد لله رب العالمين»
+              </div>
+              <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;" id="connect-question-ref">
+                سورة الفاتحة
+              </div>
+            </div>
+            <div class="quiz-options" id="connect-options-container">
+              <!-- Option buttons loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- Mode 3: Voice Recitation Box -->
+          <div id="quiz-mode-voice-box" class="hidden">
+            <div class="quiz-question-box" style="display: flex; flex-direction: column; align-items: center;">
+              <div class="quiz-question-title" id="voice-quiz-title" style="font-size: 1.1rem; margin-bottom: 16px; font-weight: 700; text-align: center;">قم بتسميع الآية التالية بصوتك عند تفعيل الميكروفون:</div>
+              <div class="quiz-question-ref" id="voice-question-ref" style="font-size: 1.3rem; color: var(--color-gold); font-weight: 700; margin-bottom: 12px; text-align: center;">سورة الفاتحة - آية 5</div>
+              
+              <!-- Voice Prompt to Complete (e.g. الحمد لله رب ...) -->
+              <div id="voice-prompt-display" style="font-family: var(--font-ar); font-size: 1.8rem; color: var(--color-gold); font-weight: 700; text-align: center; margin-bottom: 20px; background: rgba(217, 119, 6, 0.08); border: 1.5px dashed var(--color-gold); padding: 12px 24px; border-radius: 12px; display: inline-block; direction: rtl;"></div>
+              
+              <!-- Voice Transcript & Compare display area -->
+              <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; min-height: 120px; margin-bottom: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;">
+                <!-- Real-time recognized text -->
+                <div id="voice-live-transcript" style="font-family: var(--font-ar); font-size: 1.8rem; color: var(--text-secondary); text-align: center; font-style: italic; min-height: 40px; line-height: 1.6;">(سيبدأ ظهور كلماتك هنا بمجرد التحدث...)</div>
+                
+                <!-- Coloured comparison results -->
+                <div id="voice-compare-result" class="hidden" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; direction: rtl; width: 100%;">
+                  <!-- Correct/incorrect words rendered dynamically -->
+                </div>
+              </div>
+              
+              <!-- Microphone Button -->
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 20px 0;">
+                <button class="voice-mic-btn" id="voice-mic-btn" title="اضغط للبدء/الإيقاف">
+                  <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                  </svg>
+                </button>
+                <span id="voice-mic-status" style="font-size: 0.9rem; font-weight: 700; color: var(--text-secondary);">اضغط على الميكروفون وابدأ القراءة 🎙️</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: center; gap: 12px;" id="voice-action-row">
+              <button class="action-btn" id="voice-retry-btn" style="padding: 14px 28px;">إعادة المحاولة 🔁</button>
+            </div>
+          </div>
+
+          <div class="quiz-footer">
+            <span id="quiz-progress-text">السورة: الفاتحة</span>
+            <button class="action-btn" id="quiz-next-question-btn" style="display: none; background: var(--color-emerald); color: white; padding: 12px 24px; font-size: 1rem;">
+              السؤال التالي ➡️
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SETTINGS VIEW -->
+      <section class="view-section" id="view-settings">
+        <div class="page-header">
+          <div class="page-title">
+            <h2>إعدادات التطبيق وتعديل الصوتيات ⚙️</h2>
+            <p>اضبط مشغل الصوتيات أو قم بتفريغ وتحميل التلاوات الصوتية لجهازك.</p>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-secondary); border: 1px solid var(--glass-border); border-radius: 20px; padding: 32px; max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+          <div>
+            <h3 style="font-size: 1.15rem; margin-bottom: 16px; color: var(--color-gold); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">إعدادات الصوت وقراء القرآن 🔊</h3>
+            <div class="form-group">
+              <label for="settings-qari-select">القارئ الافتراضي في التطبيق:</label>
+              <select class="form-control" id="settings-qari-select">
+                <option value="ar.alafasy">مشاري راشد العفاسي (تلاوة عذبة 🌸)</option>
+                <option value="ar.abdulbasitmurattal">عبد الباسط عبد الصمد (مرتّل 🌟)</option>
+                <option value="ar.abdulbasitmudjawwad">عبد الباسط عبد الصمد (المجوّد 🕌)</option>
+                <option value="ar.husary">محمود خليل الحصري (مرتل - أحكام 🏫)</option>
+                <option value="ar.husarymujawwad">محمود خليل الحصري (المجوّد 🌸)</option>
+                <option value="ar.minshawi">محمد صديق المنشاوي (مرتل خاشع 🕌)</option>
+                <option value="ar.minshawimujawwad">محمد صديق المنشاوي (المجوّد 🕋)</option>
+                <option value="ar.ghamadi">سعد الغامدي (تلاوة متقنة 🚀)</option>
+                <option value="ar.mahermuaiqly">ماهر المعيقلي (صوت الحرم المكي 🕌)</option>
+                <option value="ar.sudais">عبد الرحمن السديس (رئيس شؤون الحرمين 🕋)</option>
+                <option value="ar.yasseraldossary">ياسر الدوسري (إمام الحرم المكي ✨)</option>
+                <option value="ar.nasseranalqatami">ناصر القطامي (صوت عذب باكٍ 😭)</option>
+                <option value="ar.faresabbad">فارس عباد (تلاوة هادئة خاشعة 🕊️)</option>
+                <option value="ar.hazzaalblushi">هزاع البلوشي (تلاوة ندية هادئة 🌸)</option>
+                <option value="ar.kurd">رعد محمد الكردي (تلاوة عذبة مؤثرة 🌱)</option>
+                <option value="ar.ajamy">أحمد بن علي العجمي (تلاوة خاشعة مميزة 🌟)</option>
+                <option value="ar.shatri">أبو بكر الشاطري (صوت خاشع هادئ 🕊️)</option>
+                <option value="ar.hudhaify">علي الحذيفي (تعليمي دقيق للأحكام 🏫)</option>
+                <option value="ar.shuraym">سعود الشريم (تلاوة خاشعة ممتازة 🕋)</option>
+                <option value="ar.muhammadayyoub">محمد أيوب (صوت الحرم المدني 🕌)</option>
+                <option value="ar.jabreel">محمد جبريل (تلاوة خاشعة ممتازة 🌟)</option>
+                <option value="ar.rifai">هاني الرفاعي (صوت باكي وخاشع 😭)</option>
+                <option value="ar.basfar">عبد الله بصفر (مرتّل ومتقن 📚)</option>
+                <option value="ar.khalifahaltunaiji">خليفة الطنيجي (تعليمي مكرر للأطفال 👶)</option>
+                <option value="ar.mahmoudalialbanna">محمود علي البنا (عملاق التلاوة المصرية 🕌)</option>
+                <option value="ar.mustafaismail">مصطفى إسماعيل (صوت المقامات الفريد 🌟)</option>
+                <option value="ar.salahbukhatir">صلاح بو خاطر (صوت هادئ ومتميز 🕊️)</option>
+                <option value="ar.tablawi">محمد محمود الطبلاوي (تلاوة رخيمة قوية 🕌)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="settings-repeat-count">عدد مرات التكرار للآية تلقائياً:</label>
+              <select class="form-control" id="settings-repeat-count">
+                <option value="1" selected>بدون تكرار (تشغيل مرة واحدة)</option>
+                <option value="2">مرتان (2x)</option>
+                <option value="3">3 مرات (3x - ننصح به للتثبيت)</option>
+                <option value="5">5 مرات (5x)</option>
+                <option value="10">10 مرات (10x)</option>
+                <option value="infinite">تكرار مستمر</option>
+              </select>
+            </div>
+            
+            <!-- Tafheem Control in Settings -->
+            <div class="form-group">
+              <label for="settings-tafheem-select">مدة التلقين والترديد خلف الشيخ (للأميين والمبتدئين):</label>
+              <select class="form-control" id="settings-tafheem-select">
+                <option value="0">بدون تلقين (تشغيل متصل)</option>
+                <option value="auto">طول مدة الآية تلقائياً (مناسب جداً 🔄)</option>
+                <option value="3">3 ثوانٍ</option>
+                <option value="5">5 ثوانٍ</option>
+                <option value="10">10 ثوانٍ</option>
+              </select>
+              <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 4px;">
+                عند التفعيل، سينتظر مشغل الصوت فترة زمنية بعد كل آية ليعطيك فرصة لترديدها وتكرارها بنفسك قبل الانتقال للآية التالية.
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-size: 1.15rem; margin-bottom: 16px; color: var(--color-gold); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px;">إدارة التنزيلات والذاكرة محلياً 📂</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
+              يتم حفظ التلاوات المسموعة تلقائياً في ذاكرة المتصفح. يمكنك مسح المساحة المستهلكة في حال امتلاء ذاكرة جهازك.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="action-btn" id="settings-clear-downloads-btn" style="border-color: var(--color-gold); color: var(--color-gold);">
+                <span>مسح الصوتيات المحملة أوفلاين فقط 🗑️</span>
+              </button>
+              <button class="action-btn" id="settings-clear-progress-btn" style="border-color: var(--color-danger); color: var(--color-danger);">
+                <span>تصفير كافّة إحصائيات حفظ القرآن والتقدم 🚨</span>
+              </button>
+            </div>
+          </div>
+          
+          <div style="text-align: center; border-top: 1px solid var(--glass-border); padding-top: 24px; color: var(--text-muted); font-size: 0.8rem;">
+            تطبيق بالإسلام نهتدي • تطبيق إسلامي مفتوح ومجاني لكل فئات المسلمين 🕋
+          </div>
+        </div>
+      </section>
+
+      <!-- AUDIO PLAYER BAR (STICKY BOTTOM) -->
+      <footer class="audio-player-bar" id="audio-player-bar">
+        <!-- Expand and minimize handles for mobile -->
+        <div class="player-expand-handle" id="player-expand-handle"></div>
+        <button class="minimize-player-btn" id="minimize-player-btn">✕</button>
+
+        <!-- Current Playing Ayah Info -->
+        <div class="current-ayah-info" id="current-ayah-info-trigger">
+          <div class="logo-icon" style="width: 36px; height: 36px; min-width: 36px;" id="player-status-indicator">
+            📖
+          </div>
+          <div style="min-width: 0; flex-grow: 1;">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <div class="current-ayah-title" id="player-surah-name">اختر سورة للبدء</div>
+              <span id="player-offline-badge" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; background: var(--bg-tertiary); color: var(--text-muted); font-weight: 700; white-space: nowrap;">--</span>
+            </div>
+            <div class="current-ayah-subtitle" id="player-ayah-num">الآية: --</div>
+          </div>
+        </div>
+
+        <!-- Player Controls (Middle) -->
+        <div class="player-controls-wrapper">
+          <div class="player-controls">
+            <!-- Prev Button -->
+            <button class="player-btn" id="player-prev-btn" title="الآية السابقة" style="width: 44px; height: 44px;">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 18V6h2v12H6zm11.5-6L9 6v12l8.5-6z"/>
+              </svg>
+            </button>
+            
+            <!-- Play/Pause Button -->
+            <button class="player-btn play-pause" id="player-play-btn" title="تشغيل / إيقاف مؤقت" style="width: 52px; height: 52px;">
+              <svg viewBox="0 0 24 24" fill="currentColor" id="player-play-icon">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+
+            <!-- Next Button -->
+            <button class="player-btn" id="player-next-btn" title="الآية التالية" style="width: 44px; height: 44px;">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 18V6h-2v12h2zM5.5 12L14 6v12L5.5 12z"/>
+              </svg>
+            </button>
+
+            <!-- Repeat Mode Button -->
+            <button class="player-btn" id="player-repeat-btn" title="تكرار الآية" style="width: 44px; height: 44px;">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="playback-bar">
+            <span class="time-display" id="player-current-time">00:00</span>
+            <div class="progress-track" id="player-progress-track" style="height: 6px;">
+              <div class="progress-bar" id="player-progress-bar"></div>
+            </div>
+            <span class="time-display" id="player-total-time">00:00</span>
+          </div>
+        </div>
+
+        <!-- Extra Controls (Right) -->
+        <div class="player-extra-controls" style="gap: 12px; flex-wrap: wrap;">
+          <!-- Tafheem (Listen & Repeat) Control in player -->
+          <div class="tafheem-control-wrapper" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;">
+            <label for="player-tafheem-select" style="color: var(--text-secondary); white-space: nowrap; font-weight: 600;">🔄 تلقين:</label>
+            <select class="qari-select" id="player-tafheem-select" style="padding: 6px; font-size: 0.75rem; border-radius: 6px;">
+              <option value="0" selected>إيقاف</option>
+              <option value="auto">تلقائي ⏳</option>
+              <option value="3">3 ثوانٍ</option>
+              <option value="5">5 ثوانٍ</option>
+              <option value="10">10 ثوانٍ</option>
+            </select>
+          </div>
+
+          <div class="qari-select-wrapper">
+            <select class="qari-select" id="player-qari-select" style="padding: 8px 12px; font-size: 0.85rem;">
+              <option value="ar.alafasy">مشاري العفاسي</option>
+              <option value="ar.abdulbasitmurattal">عبد الباسط (مرتل)</option>
+              <option value="ar.abdulbasitmudjawwad">عبد الباسط (مجود)</option>
+              <option value="ar.husary">الحصري (مرتل)</option>
+              <option value="ar.husarymujawwad">الحصري (مجود)</option>
+              <option value="ar.minshawi">المنشاوي (مرتل)</option>
+              <option value="ar.minshawimujawwad">المنشاوي (مجود)</option>
+              <option value="ar.ghamadi">سعد الغامدي</option>
+              <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+              <option value="ar.sudais">السديس</option>
+              <option value="ar.yasseraldossary">ياسر الدوسري</option>
+              <option value="ar.nasseranalqatami">ناصر القطامي</option>
+              <option value="ar.faresabbad">فارس عباد</option>
+              <option value="ar.hazzaalblushi">هزاع البلوشي</option>
+              <option value="ar.kurd">رعد الكردي</option>
+              <option value="ar.ajamy">أحمد العجمي</option>
+              <option value="ar.shatri">أبو بكر الشاطري</option>
+              <option value="ar.hudhaify">علي الحذيفي</option>
+              <option value="ar.shuraym">سعود الشريم</option>
+              <option value="ar.muhammadayyoub">محمد أيوب</option>
+              <option value="ar.jabreel">محمد جبريل</option>
+              <option value="ar.rifai">هاني الرفاعي</option>
+              <option value="ar.basfar">عبد الله بصفر</option>
+              <option value="ar.khalifahaltunaiji">خليفة الطنيجي</option>
+              <option value="ar.mahmoudalialbanna">محمود البنا</option>
+              <option value="ar.mustafaismail">مصطفى إسماعيل</option>
+              <option value="ar.salahbukhatir">صلاح بو خاطر</option>
+              <option value="ar.tablawi">الطبلاوي</option>
+            </select>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="quran-audio-player"></audio>
+
+  <!-- Load Data and Logic Scripts -->
+  <script src="quran-complete-data.js"></script>
+  <script src="hadith-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
