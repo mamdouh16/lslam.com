@@ -1,0 +1,17 @@
+{
+  "name": "بالإسلام نهتدي",
+  "short_name": "نهتدي",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b111e",
+  "theme_color": "#10b981",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

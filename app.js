@@ -2833,6 +2833,12 @@ async function initApp() {
   renderSurahSidebar();
   await loadSurah(1); // load Al-Fatiha
   
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("Service Worker registered successfully!"))
+      .catch(err => console.error("Service Worker registration failed:", err));
+  }
+  
   console.log("Quran Memorizer application (بالإسلام نهتدي) secured and initialized successfully in Offline Mode!");
 }
 
