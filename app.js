@@ -735,7 +735,7 @@ function renderVerses() {
       
       // Tap to play/select
       const handleAyahSelect = () => {
-        playSingleAyah(surah.number, ayah.numberInSurah);
+        playSingleAyah(surah.number, ayah.numberInSurah, true);
       };
       
       ayahSpan.addEventListener('click', handleAyahSelect);
@@ -838,7 +838,7 @@ function renderVerses() {
 
       const playBtn = card.querySelector('.ayah-play-btn');
       playBtn.addEventListener('click', () => {
-        playSingleAyah(surah.number, ayah.numberInSurah);
+        playSingleAyah(surah.number, ayah.numberInSurah, true);
       });
 
       const tafsirBtn = card.querySelector('.tafsir-toggle-btn');
@@ -1098,11 +1098,22 @@ document.getElementById('settings-repeat-count').addEventListener('change', (e) 
   setRepeatMode(e.target.value);
 });
 
-function playSingleAyah(surahNum, ayahNum) {
-  STATE.audio.isPlayAllSurah = false;
-  STATE.audio.playlist = [{ surahNum, ayahNum }];
-  STATE.audio.playlistIndex = 0;
+function playSingleAyah(surahNum, ayahNum, playContinuous = false) {
+  const surahData = QURAN_COMPLETE_DATA.find(s => s.number === surahNum);
+  if (playContinuous && surahData) {
+    STATE.audio.isPlayAllSurah = true;
+    STATE.audio.playlist = surahData.ayahs
+      .filter(ayah => ayah.numberInSurah >= ayahNum)
+      .map(ayah => ({
+        surahNum: surahNum,
+        ayahNum: ayah.numberInSurah
+      }));
+  } else {
+    STATE.audio.isPlayAllSurah = false;
+    STATE.audio.playlist = [{ surahNum, ayahNum }];
+  }
   
+  STATE.audio.playlistIndex = 0;
   playFromPlaylist();
 }
 
@@ -2557,6 +2568,7 @@ function processMemorizeSpokenText(spokenText) {
   let sliceStartIndex = 0;
   let searchS1 = "";
   let searchS2 = "";
+  let searchS3 = "";
 
   if (spokenWords.length >= 2) {
     const len = spokenWords.length;
@@ -2601,38 +2613,78 @@ function processMemorizeSpokenText(spokenText) {
         }
       }
 
-      // 2. Search in other Surahs: ONLY match the first Ayah (Ayah 1) of other Surahs!
+      // 2. Search in other Surahs
       if (detectedSurahNum === -1) {
-        for (let sIdx = 0; sIdx < QURAN_COMPLETE_DATA.length; sIdx++) {
-          const s = QURAN_COMPLETE_DATA[sIdx];
-          if (s.number === currentSurah.number) continue;
+        if (len >= 3) {
+          // 3-word match anywhere in any Ayah of other Surahs
+          const firstS3 = spokenWords[2];
+          const lastS3_2 = spokenWords[len - 1];
+          const lastS2_2 = spokenWords[len - 2];
+          const lastS1_2 = spokenWords[len - 3];
           
-          const firstAyah = s.ayahs[0];
-          if (firstAyah) {
-            const words = getCleanAyahWords(firstAyah, s.number);
-            if (words.length >= 2) {
-              const w1Norm = normalizeArabic(words[0]);
-              const w2Norm = normalizeArabic(words[1]);
-              
-              // Match first 2 words (session startup switch)
-              if (areWordsSimilar(firstS1, w1Norm) && areWordsSimilar(firstS2, w2Norm)) {
-                detectedSurahNum = s.number;
-                detectedAyahNum = 1; // Always Ayah 1
-                shouldSliceSpoken = true;
-                sliceStartIndex = 0;
-                searchS1 = firstS1;
-                searchS2 = firstS2;
-                break;
+          for (let sIdx = 0; sIdx < QURAN_COMPLETE_DATA.length; sIdx++) {
+            const s = QURAN_COMPLETE_DATA[sIdx];
+            if (s.number === currentSurah.number) continue;
+            
+            for (let aIdx = 0; aIdx < s.ayahs.length; aIdx++) {
+              const ayah = s.ayahs[aIdx];
+              const words = getCleanAyahWords(ayah, s.number);
+              if (words.length >= 3) {
+                for (let wIdx = 0; wIdx <= words.length - 3; wIdx++) {
+                  const w1 = normalizeArabic(words[wIdx]);
+                  const w2 = normalizeArabic(words[wIdx + 1]);
+                  const w3 = normalizeArabic(words[wIdx + 2]);
+                  
+                  // Match first 3 words
+                  if (areWordsSimilar(firstS1, w1) && areWordsSimilar(firstS2, w2) && areWordsSimilar(firstS3, w3)) {
+                    detectedSurahNum = s.number;
+                    detectedAyahNum = ayah.numberInSurah;
+                    shouldSliceSpoken = true;
+                    sliceStartIndex = 0;
+                    searchS1 = firstS1;
+                    searchS2 = firstS2;
+                    searchS3 = firstS3;
+                    break;
+                  }
+                  // Match last 3 words
+                  if (areWordsSimilar(lastS1_2, w1) && areWordsSimilar(lastS2_2, w2) && areWordsSimilar(lastS3_2, w3)) {
+                    detectedSurahNum = s.number;
+                    detectedAyahNum = ayah.numberInSurah;
+                    shouldSliceSpoken = true;
+                    sliceStartIndex = len - 3;
+                    searchS1 = lastS1_2;
+                    searchS2 = lastS2_2;
+                    searchS3 = lastS3_2;
+                    break;
+                  }
+                }
               }
-              // Match last 2 words (mid-session switch)
-              if (areWordsSimilar(lastS1, w1Norm) && areWordsSimilar(lastS2, w2Norm)) {
-                detectedSurahNum = s.number;
-                detectedAyahNum = 1; // Always Ayah 1
-                shouldSliceSpoken = true;
-                sliceStartIndex = len - 2;
-                searchS1 = lastS1;
-                searchS2 = lastS2;
-                break;
+              if (detectedSurahNum !== -1) break;
+            }
+            if (detectedSurahNum !== -1) break;
+          }
+        } else {
+          // 2-word match ONLY in the first Ayah (Ayah 1) of other Surahs
+          for (let sIdx = 0; sIdx < QURAN_COMPLETE_DATA.length; sIdx++) {
+            const s = QURAN_COMPLETE_DATA[sIdx];
+            if (s.number === currentSurah.number) continue;
+            
+            const firstAyah = s.ayahs[0];
+            if (firstAyah) {
+              const words = getCleanAyahWords(firstAyah, s.number);
+              if (words.length >= 2) {
+                const w1Norm = normalizeArabic(words[0]);
+                const w2Norm = normalizeArabic(words[1]);
+                
+                if (areWordsSimilar(firstS1, w1Norm) && areWordsSimilar(firstS2, w2Norm)) {
+                  detectedSurahNum = s.number;
+                  detectedAyahNum = 1;
+                  shouldSliceSpoken = true;
+                  sliceStartIndex = 0;
+                  searchS1 = firstS1;
+                  searchS2 = firstS2;
+                  break;
+                }
               }
             }
           }
