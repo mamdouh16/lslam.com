@@ -245,78 +245,87 @@
 
           <!-- Verses panel -->
           <div class="verses-panel" style="position: relative;">
-            <div class="verses-header" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <div class="verses-title">
-                  <h3 id="current-surah-title-header">سورة الفاتحة</h3>
-                </div>
-                <div class="verses-actions" style="gap: 8px;">
-                  <!-- Memorize Blind Recitation Mode -->
-                  <button class="action-btn" id="toggle-memorize-btn" style="padding: 10px 16px; border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
-                    <span>تسميع غيبي 🎙️</span>
-                  </button>
-                  <button class="action-btn hidden" id="memorize-mic-btn" style="padding: 10px 16px; background: linear-gradient(135deg, var(--color-emerald), #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
-                    <span>ابدأ التسميع 🎙️</span>
-                  </button>
-                  <button class="action-btn hidden" id="memorize-help-btn" style="padding: 10px 14px; border-color: rgba(217, 119, 6, 0.3); color: var(--color-gold);" title="دليل الهواتف">
-                    <span>دليل الهواتف ℹ️</span>
-                  </button>
-                  <!-- View Layout Switcher (Page vs Cards) -->
-                  <button class="action-btn active" id="toggle-layout-btn" style="padding: 10px 16px; border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
-                    <span>تصفح كصفحة مصحف 📖</span>
-                  </button>
-                  <!-- Tafsir Global Toggle -->
-                  <button class="action-btn" id="toggle-global-tafsir-btn" style="padding: 10px 16px; border-color: rgba(217, 119, 6, 0.3); color: var(--color-gold);">
-                    <span>إظهار التفسير 📖</span>
-                  </button>
-                  <button class="action-btn" id="reader-fullscreen-btn" style="padding: 10px 16px; border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
-                    <span>ملء الشاشة 📺</span>
-                  </button>
-                  <button class="action-btn" id="reader-zoom-in-btn" style="padding: 10px 12px; border-color: rgba(217, 119, 6, 0.3); color: var(--color-gold);" title="تكبير الخط">
-                    <span>A+ 🔍</span>
-                  </button>
-                  <button class="action-btn" id="reader-zoom-out-btn" style="padding: 10px 12px; border-color: rgba(217, 119, 6, 0.3); color: var(--color-gold);" title="تصغير الخط">
-                    <span>A- 🔍</span>
-                  </button>
-                  <button class="action-btn" id="toggle-translation-btn" style="padding: 10px 16px;">
-                    <span>إظهار الترجمة</span>
-                  </button>
-                  <button class="action-btn" id="play-all-surah-btn" style="padding: 10px 16px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>قراءة السورة 🔊</span>
-                  </button>
-                </div>
+            <!-- Thin elegant title bar with Surah Name and ⋮ menu trigger centered together -->
+            <div class="reader-thin-header">
+              <h3 id="current-surah-title-header" style="font-size: 1.4rem; font-weight: 700; margin: 0; color: var(--text-primary);">سورة الفاتحة</h3>
+              <button id="reader-menu-trigger" class="three-dots-btn" title="الخيارات والإعدادات">⋮</button>
+            </div>
+
+            <!-- Download Progress bar (Thin line right below thin header) -->
+            <div id="download-progress-box" class="hidden" style="position: absolute; top: 52px; left: 0; right: 0; z-index: 99; padding: 0 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 2px;">
+                <span>جاري تحميل التلاوات...</span>
+                <span id="download-percent-text">0%</span>
+              </div>
+              <div class="progress-track" style="height: 4px; cursor: default; border-radius: 2px;">
+                <div class="progress-bar" id="download-progress-bar" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div id="reader-options-dropdown" class="options-dropdown hidden">
+              <!-- Memorize Blind Recitation Mode -->
+              <button class="dropdown-item-btn" id="toggle-memorize-btn">
+                <span>🎙️ تسميع غيبي</span>
+              </button>
+              <button class="dropdown-item-btn hidden" id="memorize-mic-btn" style="background: linear-gradient(135deg, var(--color-emerald), #059669); color: white;">
+                <span>🎙️ ابدأ التسميع</span>
+              </button>
+              <button class="dropdown-item-btn hidden" id="memorize-help-btn">
+                <span>ℹ️ دليل التسميع</span>
+              </button>
+              
+              <div class="dropdown-divider"></div>
+              
+              <!-- Play/Listen to Surah -->
+              <button class="dropdown-item-btn" id="play-all-surah-btn">
+                <span>🔊 تشغيل السورة</span>
+              </button>
+              
+              <div class="dropdown-divider"></div>
+              
+              <!-- Layout Toggle -->
+              <button class="dropdown-item-btn" id="toggle-layout-btn">
+                <span>📖 عرض كمصحف</span>
+              </button>
+              
+              <!-- Tafsir Global Toggle -->
+              <button class="dropdown-item-btn" id="toggle-global-tafsir-btn">
+                <span>📖 إظهار التفسير</span>
+              </button>
+              
+              <!-- Translation Toggle -->
+              <button class="dropdown-item-btn" id="toggle-translation-btn">
+                <span>🌐 إظهار الترجمة</span>
+              </button>
+              
+              <div class="dropdown-divider"></div>
+              
+              <!-- Fullscreen -->
+              <button class="dropdown-item-btn" id="reader-fullscreen-btn">
+                <span>📺 ملء الشاشة</span>
+              </button>
+              
+              <!-- Font Zoom -->
+              <div style="display: flex; gap: 4px; padding: 4px 8px;">
+                <button class="dropdown-item-btn" id="reader-zoom-in-btn" style="flex: 1; justify-content: center; padding: 8px;" title="تكبير الخط">A+ 🔍</button>
+                <button class="dropdown-item-btn" id="reader-zoom-out-btn" style="flex: 1; justify-content: center; padding: 8px;" title="تصغير الخط">A- 🔍</button>
               </div>
               
-              <!-- Offline Download Control Panel -->
-              <div id="offline-download-panel" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%; box-sizing: border-box;">
-                <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="dropdown-divider"></div>
+              
+              <!-- Offline Download Controls -->
+              <div id="offline-download-panel" style="padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; border-top: 1px solid var(--glass-border);">
+                <div style="display: flex; align-items: center; gap: 6px;">
                   <span id="download-status-icon">📥</span>
-                  <span id="download-status-text" style="font-size: 0.85rem; font-weight: 500;">هذه السورة غير متوفرة أوفلاين.</span>
+                  <span id="download-status-text" style="color: var(--text-secondary); font-size: 0.75rem;">غير متوفرة أوفلاين.</span>
                 </div>
-                
-                <div style="display: flex; gap: 8px;">
-                  <button class="action-btn" id="download-surah-btn" style="padding: 6px 12px; font-size: 0.8rem; background: var(--color-emerald-light); border-color: rgba(16, 185, 129, 0.3); color: var(--color-emerald);">
-                    تحميل للاستماع بدون نت 📥
-                  </button>
-                  <button class="action-btn hidden" id="delete-download-btn" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.3); color: var(--color-danger);">
-                    حذف الملفات المحملة 🗑️
-                  </button>
-                </div>
-
-                <!-- Download Progress bar -->
-                <div id="download-progress-box" class="hidden" style="width: 100%; margin-top: 8px;">
-                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">
-                    <span>جاري تحميل التلاوات...</span>
-                    <span id="download-percent-text">0%</span>
-                  </div>
-                  <div class="progress-track" style="height: 6px; cursor: default;">
-                    <div class="progress-bar" id="download-progress-bar" style="width: 0%;"></div>
-                  </div>
-                </div>
+                <button class="dropdown-item-btn" id="download-surah-btn" style="background: var(--color-emerald-light); color: var(--color-emerald); justify-content: center; font-size: 0.75rem; padding: 6px;">
+                  تحميل للاستماع 📥
+                </button>
+                <button class="dropdown-item-btn hidden" id="delete-download-btn" style="color: var(--color-danger); justify-content: center; font-size: 0.75rem; padding: 6px;">
+                  حذف التحميل 🗑️
+                </button>
               </div>
             </div>
           

@@ -1954,7 +1954,98 @@ body:not(.mode-child) .quran-page-paper {
   }
 }
 
-/* Fullscreen tweaks for original verses header */
+/* Thin reader title bar - Centered Surah Name and ⋮ menu trigger */
+.reader-thin-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--glass-border);
+  height: 52px;
+  box-sizing: border-box;
+}
+
+/* Three vertical dots button */
+.three-dots-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.three-dots-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+/* Dropdown Menu Container (Centered below title) */
+.options-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: rgba(18, 30, 24, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  width: 240px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  transition: opacity 0.2s, transform 0.2s;
+  direction: rtl;
+}
+
+.options-dropdown.hidden {
+  display: none !important;
+}
+
+/* Dropdown button list items */
+.dropdown-item-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  width: 100%;
+  text-align: right;
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s, color 0.2s;
+  box-sizing: border-box;
+}
+
+.dropdown-item-btn:hover {
+  background: var(--color-emerald-light);
+  color: var(--color-emerald);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 6px 0;
+}
+
+/* Fullscreen tweaks for centered title bar layout */
 .verses-panel:fullscreen {
   background: var(--bg-primary) !important;
   border-radius: 0 !important;
@@ -1969,38 +2060,32 @@ body:not(.mode-child) .quran-page-paper {
   flex-direction: column !important;
 }
 
-.verses-panel:fullscreen .verses-header {
+.verses-panel:fullscreen .reader-thin-header {
+  display: flex !important;
+  justify-content: center !important;
   background: var(--bg-tertiary) !important;
   border-bottom: 1px solid var(--glass-border) !important;
-  padding: 12px 20px !important;
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
 }
 
-.verses-panel:fullscreen .verses-header > div {
-  display: flex !important;
-  justify-content: center !important;
-  width: 100% !important;
+.verses-panel:fullscreen .three-dots-btn {
+  display: none !important;
 }
 
-.verses-panel:fullscreen .verses-actions {
-  display: none !important; /* Hide options/commands in fullscreen! */
-}
-
-.verses-panel:fullscreen #offline-download-panel {
-  display: none !important; /* Hide offline download box in fullscreen! */
+.verses-panel:fullscreen .options-dropdown {
+  display: none !important;
 }
 
 .verses-panel:fullscreen .verses-container {
-  max-height: calc(100vh - 56px) !important;
-  height: calc(100vh - 56px) !important;
+  max-height: calc(100vh - 52px) !important;
+  height: calc(100vh - 52px) !important;
   overflow-y: auto !important;
   padding: 40px 48px 120px 48px !important;
   box-sizing: border-box !important;
+}
+
+/* Hide the bulky page-header in Reader view to keep it clean */
+#view-reader .page-header {
+  display: none !important;
 }
 
 /* Floating play button in fullscreen */
@@ -2037,11 +2122,6 @@ body:not(.mode-child) .quran-page-paper {
 
 .verses-panel:fullscreen .fullscreen-play-btn:active {
   transform: translateX(-50%) scale(0.95);
-}
-
-/* Hide the bulky page-header in Reader view to keep it clean */
-#view-reader .page-header {
-  display: none !important;
 }
 
 
