@@ -2945,33 +2945,8 @@ function setupReaderExtraControls() {
   const fullscreenBtn = document.getElementById('reader-fullscreen-btn');
   const zoomInBtn = document.getElementById('reader-zoom-in-btn');
   const zoomOutBtn = document.getElementById('reader-zoom-out-btn');
-  const trigger = document.getElementById('reader-menu-trigger');
-  const dropdown = document.getElementById('reader-options-dropdown');
   const versesPanel = document.querySelector('.verses-panel');
   const fsPlayBtn = document.getElementById('fullscreen-play-btn');
-
-  if (trigger && dropdown) {
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle('hidden');
-    });
-
-    // Close dropdown on click outside
-    document.addEventListener('click', (e) => {
-      if (!dropdown.contains(e.target) && e.target !== trigger) {
-        dropdown.classList.add('hidden');
-      }
-    });
-
-    // Close dropdown when any item is clicked except zoom buttons
-    dropdown.querySelectorAll('.dropdown-item-btn').forEach(btn => {
-      if (btn.id !== 'reader-zoom-in-btn' && btn.id !== 'reader-zoom-out-btn') {
-        btn.addEventListener('click', () => {
-          dropdown.classList.add('hidden');
-        });
-      }
-    });
-  }
 
   if (fullscreenBtn && versesPanel) {
     fullscreenBtn.addEventListener('click', () => {
