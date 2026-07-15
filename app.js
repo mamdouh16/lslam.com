@@ -2973,21 +2973,64 @@ function setupReaderExtraControls() {
     });
   }
 
+  const exitFsBtn = document.getElementById('fullscreen-exit-btn');
+
   if (fullscreenBtn && versesPanel) {
+    const enterFullscreenMode = () => {
+      versesPanel.classList.add('fullscreen-active');
+      fullscreenBtn.querySelector('span').textContent = 'إغلاق ملء الشاشة 📴';
+      
+      if (versesPanel.requestFullscreen) {
+        versesPanel.requestFullscreen().catch(err => {
+          console.log("Native fullscreen blocked/unsupported:", err);
+        });
+      } else if (versesPanel.webkitRequestFullscreen) {
+        versesPanel.webkitRequestFullscreen();
+      }
+      updateFullscreenPlayButton();
+    };
+
+    const exitFullscreenMode = () => {
+      versesPanel.classList.remove('fullscreen-active');
+      fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
+      
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(err => console.log(err));
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      updateFullscreenPlayButton();
+    };
+
     fullscreenBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        versesPanel.requestFullscreen()
-          .then(() => {
-            fullscreenBtn.querySelector('span').textContent = 'إغلاق ملء الشاشة 📴';
-          })
-          .catch(err => console.error("Error entering fullscreen:", err));
+      const isCurrentlyFs = document.fullscreenElement || document.webkitFullscreenElement || versesPanel.classList.contains('fullscreen-active');
+      if (!isCurrentlyFs) {
+        enterFullscreenMode();
       } else {
-        document.exitFullscreen();
+        exitFullscreenMode();
       }
     });
 
+    if (exitFsBtn) {
+      exitFsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exitFullscreenMode();
+      });
+    }
+
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
+        versesPanel.classList.remove('fullscreen-active');
+        fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
+      }
+      updateFullscreenPlayButton();
+    });
+
+    document.addEventListener('webkitfullscreenchange', () => {
+      if (!document.webkitFullscreenElement) {
+        versesPanel.classList.remove('fullscreen-active');
         fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
       }
       updateFullscreenPlayButton();
