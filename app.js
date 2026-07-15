@@ -2977,6 +2977,7 @@ function setupReaderExtraControls() {
 
   if (fullscreenBtn && versesPanel) {
     const enterFullscreenMode = () => {
+      document.body.classList.add('fullscreen-active-body');
       versesPanel.classList.add('fullscreen-active');
       fullscreenBtn.querySelector('span').textContent = 'إغلاق ملء الشاشة 📴';
       
@@ -2991,6 +2992,7 @@ function setupReaderExtraControls() {
     };
 
     const exitFullscreenMode = () => {
+      document.body.classList.remove('fullscreen-active-body');
       versesPanel.classList.remove('fullscreen-active');
       fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
       
@@ -3022,6 +3024,7 @@ function setupReaderExtraControls() {
 
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
+        document.body.classList.remove('fullscreen-active-body');
         versesPanel.classList.remove('fullscreen-active');
         fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
       }
@@ -3030,6 +3033,7 @@ function setupReaderExtraControls() {
 
     document.addEventListener('webkitfullscreenchange', () => {
       if (!document.webkitFullscreenElement) {
+        document.body.classList.remove('fullscreen-active-body');
         versesPanel.classList.remove('fullscreen-active');
         fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
       }

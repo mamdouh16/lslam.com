@@ -2048,7 +2048,8 @@ body:not(.mode-child) .quran-page-paper {
 /* Fullscreen tweaks for centered title bar layout */
 /* Fullscreen tweaks for centered title bar layout (supports native and fallback) */
 .verses-panel:fullscreen,
-.verses-panel.fullscreen-active {
+.verses-panel.fullscreen-active,
+body.fullscreen-active-body .verses-panel {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -2067,7 +2068,8 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .reader-thin-header,
-.verses-panel.fullscreen-active .reader-thin-header {
+.verses-panel.fullscreen-active .reader-thin-header,
+body.fullscreen-active-body .verses-panel .reader-thin-header {
   display: flex !important;
   justify-content: center !important;
   background: var(--bg-tertiary) !important;
@@ -2080,7 +2082,8 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .fullscreen-exit-btn,
-.verses-panel.fullscreen-active .fullscreen-exit-btn {
+.verses-panel.fullscreen-active .fullscreen-exit-btn,
+body.fullscreen-active-body .verses-panel .fullscreen-exit-btn {
   display: flex !important;
   position: absolute;
   left: 20px;
@@ -2099,7 +2102,8 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .fullscreen-exit-btn:hover,
-.verses-panel.fullscreen-active .fullscreen-exit-btn:hover {
+.verses-panel.fullscreen-active .fullscreen-exit-btn:hover,
+body.fullscreen-active-body .verses-panel .fullscreen-exit-btn:hover {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
 }
@@ -2109,17 +2113,22 @@ body:not(.mode-child) .quran-page-paper {
 .verses-panel:fullscreen #memorize-help-btn,
 .verses-panel.fullscreen-active .three-dots-btn,
 .verses-panel.fullscreen-active #memorize-mic-btn,
-.verses-panel.fullscreen-active #memorize-help-btn {
+.verses-panel.fullscreen-active #memorize-help-btn,
+body.fullscreen-active-body .verses-panel .three-dots-btn,
+body.fullscreen-active-body .verses-panel #memorize-mic-btn,
+body.fullscreen-active-body .verses-panel #memorize-help-btn {
   display: none !important;
 }
 
 .verses-panel:fullscreen .options-dropdown,
-.verses-panel.fullscreen-active .options-dropdown {
+.verses-panel.fullscreen-active .options-dropdown,
+body.fullscreen-active-body .verses-panel .options-dropdown {
   display: none !important;
 }
 
 .verses-panel:fullscreen .verses-container,
-.verses-panel.fullscreen-active .verses-container {
+.verses-panel.fullscreen-active .verses-container,
+body.fullscreen-active-body .verses-panel .verses-container {
   max-height: calc(100vh - 52px) !important;
   height: calc(100vh - 52px) !important;
   overflow-y: auto !important;
@@ -2138,7 +2147,8 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .fullscreen-play-btn,
-.verses-panel.fullscreen-active .fullscreen-play-btn {
+.verses-panel.fullscreen-active .fullscreen-play-btn,
+body.fullscreen-active-body .verses-panel .fullscreen-play-btn {
   display: flex !important;
   position: absolute;
   bottom: 40px;
@@ -2160,14 +2170,16 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .fullscreen-play-btn:hover,
-.verses-panel.fullscreen-active .fullscreen-play-btn:hover {
+.verses-panel.fullscreen-active .fullscreen-play-btn:hover,
+body.fullscreen-active-body .verses-panel .fullscreen-play-btn:hover {
   background: #059669;
   transform: translateX(-50%) scale(1.1);
   box-shadow: 0 15px 40px rgba(5, 150, 105, 0.6), 0 0 0 10px rgba(5, 150, 105, 0.25);
 }
 
 .verses-panel:fullscreen .fullscreen-play-btn:active,
-.verses-panel.fullscreen-active .fullscreen-play-btn:active {
+.verses-panel.fullscreen-active .fullscreen-play-btn:active,
+body.fullscreen-active-body .verses-panel .fullscreen-play-btn:active {
   transform: translateX(-50%) scale(0.95);
 }
 
