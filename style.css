@@ -532,12 +532,32 @@ body {
 
 /* Verses Panel */
 .verses-panel {
+  --quran-font-size: 2.2rem;
   background: var(--bg-secondary);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.verses-panel:fullscreen {
+  background: var(--bg-primary) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  padding: 24px !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  box-sizing: border-box !important;
+}
+
+.verses-panel:fullscreen .verses-container {
+  max-height: calc(100vh - 130px) !important;
+  height: calc(100vh - 130px) !important;
+  overflow-y: auto !important;
 }
 
 .verses-header {
@@ -664,7 +684,7 @@ body {
 
 .ayah-text-arabic {
   font-family: var(--font-ar);
-  font-size: 2.3rem;
+  font-size: calc(var(--quran-font-size) + 0.1rem);
   line-height: 2.3;
   color: var(--text-primary);
   text-align: right;
@@ -1715,7 +1735,7 @@ body.mode-literate .illiterate-memorize-btn {
   padding: 40px 48px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), inset 0 0 30px rgba(217, 119, 6, 0.04);
   font-family: var(--font-ar);
-  font-size: 2.2rem;
+  font-size: var(--quran-font-size);
   line-height: 2.4;
   text-align: justify;
   text-align-last: center;

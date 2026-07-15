@@ -2926,6 +2926,53 @@ function setupExpandablePlayer() {
   }
 }
 
+let currentReaderFontSize = 2.2;
+
+function setupReaderExtraControls() {
+  const fullscreenBtn = document.getElementById('reader-fullscreen-btn');
+  const zoomInBtn = document.getElementById('reader-zoom-in-btn');
+  const zoomOutBtn = document.getElementById('reader-zoom-out-btn');
+  const versesPanel = document.querySelector('.verses-panel');
+
+  if (fullscreenBtn && versesPanel) {
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        versesPanel.requestFullscreen()
+          .then(() => {
+            fullscreenBtn.querySelector('span').textContent = 'إغلاق ملء الشاشة 📴';
+          })
+          .catch(err => console.error("Error entering fullscreen:", err));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
+      }
+    });
+  }
+
+  if (zoomInBtn && versesPanel) {
+    zoomInBtn.addEventListener('click', () => {
+      if (currentReaderFontSize < 4.6) {
+        currentReaderFontSize += 0.2;
+        versesPanel.style.setProperty('--quran-font-size', `${currentReaderFontSize}rem`);
+      }
+    });
+  }
+
+  if (zoomOutBtn && versesPanel) {
+    zoomOutBtn.addEventListener('click', () => {
+      if (currentReaderFontSize > 1.4) {
+        currentReaderFontSize -= 0.2;
+        versesPanel.style.setProperty('--quran-font-size', `${currentReaderFontSize}rem`);
+      }
+    });
+  }
+}
+
 async function initApp() {
   initStorage();
   updateStreak();
@@ -2933,6 +2980,7 @@ async function initApp() {
   setupUserModeSwitcher();
   setupExpandablePlayer();
   setupMemorizeModeToggle();
+  setupReaderExtraControls();
   
   setRepeatMode(STATE.audio.repeatMode);
   setUserMode(STATE.userMode);
