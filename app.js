@@ -1298,6 +1298,7 @@ function playAudio() {
       STATE.audio.isPlaying = true;
       globalPlayIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
       document.getElementById('player-status-indicator').style.animation = "pulse 1.5s infinite";
+      if (typeof updateFullscreenPlayButton === 'function') updateFullscreenPlayButton();
       
       STATE.progress.totalMinutesListened += 0.05;
       saveProgressToStorage();
@@ -1312,6 +1313,7 @@ function pauseAudio() {
   STATE.audio.isPlaying = false;
   globalPlayIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
   document.getElementById('player-status-indicator').style.animation = "none";
+  if (typeof updateFullscreenPlayButton === 'function') updateFullscreenPlayButton();
 }
 
 function stopAudio() {
@@ -2928,6 +2930,17 @@ function setupExpandablePlayer() {
 
 let currentReaderFontSize = 2.2;
 
+function updateFullscreenPlayButton() {
+  const fsPlayBtn = document.getElementById('fullscreen-play-btn');
+  if (fsPlayBtn) {
+    if (STATE.audio.isPlaying) {
+      fsPlayBtn.textContent = '⏸️';
+    } else {
+      fsPlayBtn.textContent = '▶️';
+    }
+  }
+}
+
 function setupReaderExtraControls() {
   const fullscreenBtn = document.getElementById('reader-fullscreen-btn');
   const zoomInBtn = document.getElementById('reader-zoom-in-btn');
@@ -2935,6 +2948,7 @@ function setupReaderExtraControls() {
   const trigger = document.getElementById('reader-menu-trigger');
   const dropdown = document.getElementById('reader-options-dropdown');
   const versesPanel = document.querySelector('.verses-panel');
+  const fsPlayBtn = document.getElementById('fullscreen-play-btn');
 
   if (trigger && dropdown) {
     trigger.addEventListener('click', (e) => {
@@ -2976,6 +2990,23 @@ function setupReaderExtraControls() {
       if (!document.fullscreenElement) {
         fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
       }
+      updateFullscreenPlayButton();
+    });
+  }
+
+  if (fsPlayBtn) {
+    fsPlayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (STATE.audio.isPlaying) {
+        pauseAudio();
+      } else {
+        if (STATE.audio.currentGlobalAyahNum) {
+          playAudio();
+        } else if (STATE.currentSurah) {
+          playSingleAyah(STATE.currentSurah.number, 1, true);
+        }
+      }
+      updateFullscreenPlayButton();
     });
   }
 

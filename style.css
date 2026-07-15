@@ -2059,17 +2059,56 @@ body:not(.mode-child) .quran-page-paper {
   flex-direction: column !important;
 }
 
-.verses-panel:fullscreen .verses-container {
-  max-height: calc(100vh - 52px) !important;
-  height: calc(100vh - 52px) !important;
-  overflow-y: auto !important;
-  padding: 24px !important;
-  box-sizing: border-box !important;
+.verses-panel:fullscreen .reader-thin-header {
+  display: none !important;
 }
 
 .verses-panel:fullscreen .options-dropdown {
-  top: 50px !important;
-  left: 20px !important;
+  display: none !important;
+}
+
+.verses-panel:fullscreen .verses-container {
+  max-height: 100vh !important;
+  height: 100vh !important;
+  overflow-y: auto !important;
+  padding: 40px 48px 120px 48px !important;
+  box-sizing: border-box !important;
+}
+
+/* Floating play button in fullscreen */
+.fullscreen-play-btn {
+  display: none !important;
+}
+
+.verses-panel:fullscreen .fullscreen-play-btn {
+  display: flex !important;
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10002;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.8rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5), 0 0 0 6px rgba(16, 185, 129, 0.15);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.verses-panel:fullscreen .fullscreen-play-btn:hover {
+  background: #059669;
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: 0 15px 40px rgba(5, 150, 105, 0.6), 0 0 0 10px rgba(5, 150, 105, 0.25);
+}
+
+.verses-panel:fullscreen .fullscreen-play-btn:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
 
