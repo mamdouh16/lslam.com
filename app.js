@@ -201,6 +201,9 @@ function initStorage() {
   if (savedTafheem && allowedTafheems.includes(savedTafheem)) {
     STATE.audio.tafheemMode = savedTafheem;
   }
+
+  // Load bookmarks
+  STATE.bookmarks = safeParseJSON(localStorage.getItem('bal_islam_bookmarks'), []);
 }
 
 function saveProgressToStorage() {
@@ -721,6 +724,8 @@ async function loadSurah(surahNum) {
   initMemorizeWordsForSurah();
   renderVerses();
   updateSurahOfflineUI();
+  
+  saveLastReadPosition(surahNum, 1);
 }
 
 function getActiveMemorizeAyahNum() {
@@ -837,9 +842,15 @@ function renderVerses() {
         card.classList.add('active');
       }
 
+      const isBookmarked = isAyahBookmarked(surah.number, ayah.numberInSurah);
       card.innerHTML = `
-        <div class="ayah-card-header">
-          <span class="ayah-badge">الآية ${ayah.numberInSurah}</span>
+        <div class="ayah-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="ayah-badge">الآية ${ayah.numberInSurah}</span>
+            <button class="ayah-card-bookmark-btn" style="background: none; border: none; cursor: pointer; font-size: 1.15rem; padding: 0; display: flex; align-items: center; color: ${isBookmarked ? 'var(--color-gold)' : 'var(--text-secondary)'};" title="${isBookmarked ? 'إزالة الإشارة المرجعية' : 'إضافة إشارة مرجعية'}">
+              ${isBookmarked ? '🔖' : '🪶'}
+            </button>
+          </div>
           
           <div class="ayah-status-dropdown">
             <select class="ayah-status-select" data-key="${ayahKey}">
@@ -878,6 +889,14 @@ function renderVerses() {
       `;
 
       renderAyahTextWithWords(ayah, card.querySelector('.ayah-text-arabic'));
+
+      const cardBookmarkBtn = card.querySelector('.ayah-card-bookmark-btn');
+      if (cardBookmarkBtn) {
+        cardBookmarkBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleAyahBookmark(surah.number, ayah.numberInSurah);
+        });
+      }
 
       const select = card.querySelector('.ayah-status-select');
       select.addEventListener('change', (e) => {
@@ -920,10 +939,19 @@ function renderPageAyahDetails(surahNum, ayahNum) {
   const ayahKey = `${surahNum}_${ayahNum}`;
   const status = STATE.progress.memorized[ayahKey] || 'not_started';
 
+  const isBookmarked = isAyahBookmarked(surahNum, ayahNum);
+  
+  saveLastReadPosition(surahNum, ayahNum);
+
   panel.innerHTML = `
     <div style="background: var(--bg-tertiary); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; animation: fadeIn 0.3s;">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <span class="ayah-badge" style="font-size: 0.85rem;">سورة ${sanitizeInput(surah.name)} - الآية ${ayahNum}</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="ayah-badge" style="font-size: 0.85rem;">سورة ${sanitizeInput(surah.name)} - الآية ${ayahNum}</span>
+          <button class="action-btn toggle-bookmark-page-btn" style="padding: 4px 8px; font-size: 0.8rem; border-radius: 8px; border: 1px solid var(--glass-border); background: ${isBookmarked ? 'rgba(217, 119, 6, 0.15)' : 'none'}; color: ${isBookmarked ? 'var(--color-gold)' : 'var(--text-secondary)'}; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="${isBookmarked ? 'إزالة الإشارة المرجعية' : 'حفظ كإشارة مرجعية'}">
+            <span>${isBookmarked ? '🔖 محفوظ' : '🔖 حفظ'}</span>
+          </button>
+        </div>
         
         <div style="display: flex; gap: 8px; align-items: center;">
           <span style="font-size: 0.85rem; color: var(--text-secondary);">حالة الحفظ:</span>
@@ -942,6 +970,13 @@ function renderPageAyahDetails(surahNum, ayahNum) {
       </div>
     </div>
   `;
+
+  const bookmarkBtn = panel.querySelector('.toggle-bookmark-page-btn');
+  if (bookmarkBtn) {
+    bookmarkBtn.addEventListener('click', () => {
+      toggleAyahBookmark(surahNum, ayahNum);
+    });
+  }
 
   const select = panel.querySelector('.page-detail-status-select');
   select.addEventListener('change', (e) => {
@@ -1164,6 +1199,7 @@ function playSingleAyah(surahNum, ayahNum, playContinuous = false) {
   
   STATE.audio.playlistIndex = 0;
   playFromPlaylist();
+  saveLastReadPosition(surahNum, ayahNum);
 }
 
 document.getElementById('play-all-surah-btn').addEventListener('click', () => {
@@ -2431,6 +2467,16 @@ function setupMemorizeModeToggle() {
     if (helpBtn) helpBtn.classList.toggle('hidden', !STATE.memorizeMode);
     container.classList.toggle('memorize-active', STATE.memorizeMode);
     
+    // Toggle audio recorder panel
+    const recPanel = document.getElementById('tasmey-recorder-panel');
+    if (recPanel) {
+      recPanel.classList.toggle('hidden', !STATE.memorizeMode);
+      // If we exit Tasmey Mode, stop recording and reset state
+      if (!STATE.memorizeMode) {
+        resetTasmeyRecording();
+      }
+    }
+    
     if (STATE.memorizeMode) {
       initMemorizeWordsForSurah();
       renderVerses();
@@ -3078,6 +3124,294 @@ function setupReaderExtraControls() {
   }
 }
 
+// ==========================================
+// 15. NEW FEATURES: LAST READ, BOOKMARKS, AUDIO RECORDING & TIMED BANNER
+// ==========================================
+function saveLastReadPosition(surahNum, ayahNum) {
+  const surah = QURAN_COMPLETE_DATA.find(s => s.number === surahNum);
+  if (!surah) return;
+  STATE.lastRead = {
+    surahNum: surahNum,
+    ayahNum: ayahNum,
+    surahName: surah.name,
+    timestamp: Date.now()
+  };
+  localStorage.setItem('bal_islam_last_read', JSON.stringify(STATE.lastRead));
+  renderLastReadButton();
+}
+
+function renderLastReadButton() {
+  const card = document.getElementById('continue-reading-card');
+  const text = document.getElementById('continue-reading-text');
+  if (!card || !text) return;
+  
+  const lastRead = JSON.parse(localStorage.getItem('bal_islam_last_read'));
+  if (lastRead && lastRead.surahNum) {
+    card.classList.remove('hidden');
+    text.textContent = `آخر ما قرأت: سورة ${lastRead.surahName} - الآية ${lastRead.ayahNum}`;
+  } else {
+    card.classList.add('hidden');
+  }
+}
+
+async function resumeLastReadPosition() {
+  const lastRead = JSON.parse(localStorage.getItem('bal_islam_last_read'));
+  if (lastRead && lastRead.surahNum) {
+    const readerNavItem = document.querySelector('.nav-menu .nav-item[data-view="reader"]');
+    if (readerNavItem) readerNavItem.click();
+    
+    await loadSurah(lastRead.surahNum);
+    
+    setTimeout(() => {
+      const span = document.getElementById(`ayah-span-${lastRead.ayahNum}`);
+      if (span) {
+        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        span.click();
+      } else {
+        const card = document.getElementById(`ayah-card-${lastRead.ayahNum}`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.click();
+        }
+      }
+    }, 400);
+  }
+}
+
+function isAyahBookmarked(surahNum, ayahNum) {
+  if (!STATE.bookmarks) return false;
+  return STATE.bookmarks.some(b => b.surahNum === surahNum && b.ayahNum === ayahNum);
+}
+
+function toggleAyahBookmark(surahNum, ayahNum) {
+  if (!STATE.bookmarks) STATE.bookmarks = [];
+  const index = STATE.bookmarks.findIndex(b => b.surahNum === surahNum && b.ayahNum === ayahNum);
+  
+  const surah = QURAN_COMPLETE_DATA.find(s => s.number === surahNum);
+  if (!surah) return;
+  
+  if (index > -1) {
+    STATE.bookmarks.splice(index, 1);
+  } else {
+    STATE.bookmarks.push({
+      surahNum: surahNum,
+      ayahNum: ayahNum,
+      surahName: surah.name,
+      timestamp: Date.now()
+    });
+  }
+  localStorage.setItem('bal_islam_bookmarks', JSON.stringify(STATE.bookmarks));
+  
+  renderBookmarksList();
+  if (STATE.readerLayout === 'page') {
+    renderPageAyahDetails(surahNum, ayahNum);
+  } else {
+    renderVerses();
+  }
+}
+
+function renderBookmarksList() {
+  const container = document.getElementById('bookmarks-list-container');
+  if (!container) return;
+  
+  const bookmarks = JSON.parse(localStorage.getItem('bal_islam_bookmarks')) || [];
+  STATE.bookmarks = bookmarks;
+  
+  if (bookmarks.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 20px;">
+        لا توجد إشارات مرجعية محفوظة حالياً. اضغط على أي آية لحفظها كإشارة مرجعية!
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = '';
+  bookmarks.sort((a, b) => b.timestamp - a.timestamp);
+  
+  bookmarks.forEach(b => {
+    const div = document.createElement('div');
+    div.style.cssText = "background: var(--bg-secondary); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; margin-bottom: 8px;";
+    div.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.25rem; color: var(--color-gold);">🔖</span>
+        <div>
+          <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary); display: block;">سورة ${b.surahName}</span>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">الآية رقم ${b.ayahNum}</span>
+        </div>
+      </div>
+      <button class="action-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: rgba(239, 68, 68, 0.25); color: var(--color-danger); background: none; border-radius: 8px;" onclick="event.stopPropagation(); removeBookmarkFromList(${b.surahNum}, ${b.ayahNum})">✕ حذف</button>
+    `;
+    div.onclick = async () => {
+      const readerNavItem = document.querySelector('.nav-menu .nav-item[data-view="reader"]');
+      if (readerNavItem) readerNavItem.click();
+      await loadSurah(b.surahNum);
+      setTimeout(() => {
+        const span = document.getElementById(`ayah-span-${b.ayahNum}`);
+        if (span) {
+          span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          span.click();
+        } else {
+          const card = document.getElementById(`ayah-card-${b.ayahNum}`);
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.click();
+          }
+        }
+      }, 400);
+    };
+    container.appendChild(div);
+  });
+}
+
+// Audio Recording System for Tasmey Mode
+let mediaRecorder = null;
+let audioChunks = [];
+let recordTimerInterval = null;
+let recordSeconds = 0;
+
+function setupAudioRecorder() {
+  const recBtn = document.getElementById('rec-start-stop-btn');
+  const statusText = document.getElementById('rec-status-text');
+  const previewControls = document.getElementById('rec-preview-controls');
+  const audioPreview = document.getElementById('rec-audio-preview');
+  const shareBtn = document.getElementById('rec-share-btn');
+  
+  if (!recBtn || !statusText || !previewControls || !audioPreview || !shareBtn) return;
+  
+  recBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        };
+        
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          audioPreview.src = audioUrl;
+          
+          previewControls.classList.remove('hidden');
+          statusText.textContent = 'تم تسجيل تلاوتك بنجاح! استمع إليها أو شاركها 🌟';
+          recBtn.textContent = '🎙️';
+          recBtn.style.background = 'var(--color-danger)';
+          recBtn.style.animation = 'none';
+          
+          shareBtn.onclick = async (e) => {
+            e.stopPropagation();
+            const file = new File([audioBlob], `tasmey_recitation_${STATE.currentSurahNum || 1}.wav`, { type: 'audio/wav' });
+            
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  files: [file],
+                  title: `تلاوة سورة ${STATE.currentSurah ? STATE.currentSurah.name : ''}`,
+                  text: 'استمع لتلاوتي العطرة للقرآن الكريم 🌸'
+                });
+              } catch (err) {
+                console.log("Error sharing:", err);
+              }
+            } else {
+              const a = document.createElement('a');
+              a.href = audioUrl;
+              a.download = `tasmey_recitation_${STATE.currentSurahNum || 1}.wav`;
+              a.click();
+              alert("تم تنزيل التسجيل الصوتي في جهازك لعدم دعم المشاركة المباشرة في هذا المتصفح.");
+            }
+          };
+        };
+        
+        mediaRecorder.start();
+        previewControls.classList.add('hidden');
+        recBtn.textContent = '⏹️';
+        recBtn.style.background = '#d97706';
+        recBtn.style.animation = 'pulse 1s infinite';
+        
+        recordSeconds = 0;
+        statusText.textContent = 'جاري تسجيل التلاوة... 🔴 (00:00)';
+        clearInterval(recordTimerInterval);
+        recordTimerInterval = setInterval(() => {
+          recordSeconds++;
+          const mins = String(Math.floor(recordSeconds / 60)).padStart(2, '0');
+          const secs = String(recordSeconds % 60).padStart(2, '0');
+          statusText.textContent = `جاري تسجيل التلاوة... 🔴 (${mins}:${secs})`;
+        }, 1000);
+        
+      } catch (err) {
+        console.error("Microphone access denied or error:", err);
+        alert("لم نتمكن من الوصول للميكروفون. يرجى إعطاء صلاحيات الميكروفون للموقع.");
+      }
+    } else {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        clearInterval(recordTimerInterval);
+      }
+    }
+  });
+}
+
+function resetTasmeyRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+  }
+  clearInterval(recordTimerInterval);
+  const recBtn = document.getElementById('rec-start-stop-btn');
+  const statusText = document.getElementById('rec-status-text');
+  const previewControls = document.getElementById('rec-preview-controls');
+  
+  if (recBtn) {
+    recBtn.textContent = '🎙️';
+    recBtn.style.background = 'var(--color-danger)';
+    recBtn.style.animation = 'none';
+  }
+  if (statusText) {
+    statusText.textContent = 'اضغط على الميكروفون لتسجيل تلاوتك وصوتك 🎙';
+  }
+  if (previewControls) {
+    previewControls.classList.add('hidden');
+  }
+}
+
+function showTemporaryUpdatesBanner() {
+  const modal = document.getElementById('update-banner-modal');
+  const timerSec = document.getElementById('update-timer-sec');
+  if (!modal) return;
+  
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    modal.style.opacity = '1';
+  }, 50);
+  
+  let count = 5;
+  const interval = setInterval(() => {
+    count--;
+    if (timerSec) timerSec.textContent = count;
+    if (count <= 0) {
+      clearInterval(interval);
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 400);
+    }
+  }, 1000);
+}
+
+// Export functions for global accessibility in HTML clicks
+window.resumeLastReadPosition = resumeLastReadPosition;
+window.removeBookmarkFromList = (surahNum, ayahNum) => {
+  toggleAyahBookmark(surahNum, ayahNum);
+};
+window.resetTasmeyRecording = resetTasmeyRecording;
+
 async function initApp() {
   initStorage();
   updateStreak();
@@ -3094,6 +3428,18 @@ async function initApp() {
   renderSurahSidebar();
   await loadSurah(1); // load Al-Fatiha
   
+  // Render new dashboard states
+  renderLastReadButton();
+  renderBookmarksList();
+  setupAudioRecorder();
+  showTemporaryUpdatesBanner();
+
+  // Direct-to-Mushaf redirection after Splash Screen
+  setTimeout(() => {
+    const readerNavItem = document.querySelector('.nav-menu .nav-item[data-view="reader"]');
+    if (readerNavItem) readerNavItem.click();
+  }, 100);
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
       .then(() => console.log("Service Worker registered successfully!"))
