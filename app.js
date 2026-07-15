@@ -2932,13 +2932,30 @@ function setupReaderExtraControls() {
   const fullscreenBtn = document.getElementById('reader-fullscreen-btn');
   const zoomInBtn = document.getElementById('reader-zoom-in-btn');
   const zoomOutBtn = document.getElementById('reader-zoom-out-btn');
-  const toggleControlsBtn = document.getElementById('toggle-reader-controls-btn');
+  const trigger = document.getElementById('reader-menu-trigger');
+  const dropdown = document.getElementById('reader-options-dropdown');
   const versesPanel = document.querySelector('.verses-panel');
 
-  if (toggleControlsBtn && versesPanel) {
-    toggleControlsBtn.addEventListener('click', (e) => {
+  if (trigger && dropdown) {
+    trigger.addEventListener('click', (e) => {
       e.stopPropagation();
-      versesPanel.classList.toggle('controls-hidden');
+      dropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown on click outside
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target) && e.target !== trigger) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    // Close dropdown when any item is clicked except zoom buttons
+    dropdown.querySelectorAll('.dropdown-item-btn').forEach(btn => {
+      if (btn.id !== 'reader-zoom-in-btn' && btn.id !== 'reader-zoom-out-btn') {
+        btn.addEventListener('click', () => {
+          dropdown.classList.add('hidden');
+        });
+      }
     });
   }
 
@@ -2948,7 +2965,6 @@ function setupReaderExtraControls() {
         versesPanel.requestFullscreen()
           .then(() => {
             fullscreenBtn.querySelector('span').textContent = 'إغلاق ملء الشاشة 📴';
-            versesPanel.classList.add('controls-hidden');
           })
           .catch(err => console.error("Error entering fullscreen:", err));
       } else {
@@ -2959,13 +2975,13 @@ function setupReaderExtraControls() {
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
         fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
-        versesPanel.classList.remove('controls-hidden');
       }
     });
   }
 
   if (zoomInBtn && versesPanel) {
-    zoomInBtn.addEventListener('click', () => {
+    zoomInBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (currentReaderFontSize < 4.6) {
         currentReaderFontSize += 0.2;
         versesPanel.style.setProperty('--quran-font-size', `${currentReaderFontSize}rem`);
@@ -2974,7 +2990,8 @@ function setupReaderExtraControls() {
   }
 
   if (zoomOutBtn && versesPanel) {
-    zoomOutBtn.addEventListener('click', () => {
+    zoomOutBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (currentReaderFontSize > 1.4) {
         currentReaderFontSize -= 0.2;
         versesPanel.style.setProperty('--quran-font-size', `${currentReaderFontSize}rem`);

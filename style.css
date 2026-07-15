@@ -1954,64 +1954,122 @@ body:not(.mode-child) .quran-page-paper {
   }
 }
 
-/* Floating controls toggle button */
-.floating-controls-btn {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 100;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+/* Thin reader title bar */
+.reader-thin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
   background: var(--bg-tertiary);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
+  border-bottom: 1px solid var(--glass-border);
+  height: 52px;
+  box-sizing: border-box;
+}
+
+/* Three vertical dots button */
+.three-dots-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
 }
 
-.floating-controls-btn:hover {
+.three-dots-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+/* Dropdown Menu Container */
+.options-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(18, 30, 24, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  width: 240px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  transform-origin: top left;
+  transition: opacity 0.2s, transform 0.2s;
+  direction: rtl;
+}
+
+.options-dropdown.hidden {
+  display: none !important;
+}
+
+/* Dropdown button list items */
+.dropdown-item-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  width: 100%;
+  text-align: right;
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s, color 0.2s;
+  box-sizing: border-box;
+}
+
+.dropdown-item-btn:hover {
   background: var(--color-emerald-light);
   color: var(--color-emerald);
-  transform: rotate(30deg) scale(1.1);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
 }
 
-/* Hideable reader header container */
-#reader-controls-header {
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s ease;
-  max-height: 400px;
-  opacity: 1;
-  visibility: visible;
-  overflow: hidden;
+.dropdown-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 6px 0;
 }
 
-/* Collapsed state */
-.verses-panel.controls-hidden #reader-controls-header {
-  max-height: 0 !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  border-bottom: none !important;
+/* Fullscreen tweaks for three-dots menu layout */
+.verses-panel:fullscreen {
+  background: var(--bg-primary) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-/* Adjust layout when controls are hidden */
-.verses-panel.controls-hidden .verses-container {
-  padding-top: 60px !important;
+.verses-panel:fullscreen .verses-container {
+  max-height: calc(100vh - 52px) !important;
+  height: calc(100vh - 52px) !important;
+  overflow-y: auto !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
 }
 
-.verses-panel.controls-hidden:fullscreen {
-  padding: 16px !important;
-}
-
-.verses-panel.controls-hidden:fullscreen .verses-container {
-  max-height: calc(100vh - 40px) !important;
-  height: calc(100vh - 40px) !important;
-  padding-top: 60px !important;
+.verses-panel:fullscreen .options-dropdown {
+  top: 50px !important;
+  left: 20px !important;
 }
 
 
