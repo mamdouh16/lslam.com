@@ -2118,4 +2118,9 @@ body:not(.mode-child) .quran-page-paper {
   transform: translateX(-50%) scale(0.95);
 }
 
+/* Hide the bulky page-header in Reader view to keep it clean */
+#view-reader .page-header {
+  display: none !important;
+}
+
 
