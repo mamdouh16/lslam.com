@@ -69,6 +69,55 @@ const DAILY_VERSES = [
 
 const AUDIO_CACHE_NAME = 'bal-islam-audio-cache';
 
+const QARI_FOLDERS = {
+  'ar.alafasy': 'Alafasy_128kbps',
+  'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_192kbps',
+  'ar.abdulsamad': 'Abdul_Basit_Mujawwad_128kbps',
+  'ar.husary': 'Husary_128kbps',
+  'ar.husarymujawwad': 'Husary_Mujawwad_64kbps',
+  'ar.husarymuallim': 'Husary_Muallim_128kbps',
+  'ar.minshawi': 'Minshawy_Murattal_128kbps',
+  'ar.minshawimujawwad': 'Minshawy_Mujawwad_192kbps',
+  'ar.mahermuaiqly': 'MaherAlMuaiqly128kbps',
+  'ar.sudais': 'Abdurrahmaan_As-Sudais_192kbps',
+  'ar.shuraym': 'Saood_ash-Shuraym_128kbps',
+  'ar.ajamy': 'ahmed_ibn_ali_al_ajamy_128kbps',
+  'ar.shatri': 'Abu_Bakr_Ash-Shaatree_128kbps',
+  'ar.hudhaify': 'Hudhaify_128kbps',
+  'ar.muhammadayyoub': 'Muhammad_Ayyoub_128kbps',
+  'ar.muhammadjibreel': 'Muhammad_Jibreel_128kbps',
+  'ar.hanirifai': 'Hani_Rifai_192kbps',
+  'ar.basfar': 'Abdullah_Basfar_192kbps',
+  'ar.ibrahimakhbar': 'Ibrahim_Akhdar_64kbps',
+  'ar.aymanswoaid': 'Ayman_Sowaid_64kbps',
+  'ar.ghamadi': 'Ghamadi_40kbps',
+  'ar.yasseraldossary': 'Yasser_Ad-Dussary_128kbps',
+  'ar.nasseranalqatami': 'Nasser_Alqatami_128kbps',
+  'ar.faresabbad': 'Fares_Abbad_64kbps',
+  'ar.khalifahaltunaiji': 'khalefa_al_tunaiji_64kbps',
+  'ar.mahmoudalialbanna': 'mahmoud_ali_al_banna_32kbps',
+  'ar.mustafaismail': 'Mustafa_Ismail_48kbps',
+  'ar.salahbukhatir': 'Salaah_AbdulRahman_Bukhatir_128kbps',
+  'ar.tablawi': 'Mohammad_al_Tablaway_128kbps'
+};
+
+function getSurahAndAyahFromGlobal(globalNum) {
+  let count = 0;
+  for (let sIdx = 0; sIdx < QURAN_COMPLETE_DATA.length; sIdx++) {
+    const surah = QURAN_COMPLETE_DATA[sIdx];
+    if (globalNum > count && globalNum <= count + surah.ayahs.length) {
+      const ayahIndex = globalNum - count - 1;
+      const ayah = surah.ayahs[ayahIndex];
+      return {
+        surahNum: surah.number,
+        ayahNum: ayah ? ayah.numberInSurah : 1
+      };
+    }
+    count += surah.ayahs.length;
+  }
+  return { surahNum: 1, ayahNum: 1 };
+}
+
 // ==========================================
 // 2. SECURITY UTILITIES (XSS PREVENTION & SANITIZATION)
 // ==========================================
@@ -131,9 +180,11 @@ function initStorage() {
   const savedQari = localStorage.getItem('quran_memorizer_qari');
   const allowedQaris = [
     'ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdulsamad', 'ar.husary', 'ar.husarymujawwad',
-    'ar.minshawi', 'ar.minshawimujawwad', 'ar.mahermuaiqly', 'ar.abdurrahmaansudais', 'ar.saoodshuraym',
-    'ar.ahmedajamy', 'ar.shaatree', 'ar.hudhaify', 'ar.muhammadayyoub', 'ar.muhammadjibreel',
-    'ar.hanirifai', 'ar.abdullahbasfar', 'ar.ibrahimakhbar', 'ar.aymanswoaid'
+    'ar.husarymuallim', 'ar.minshawi', 'ar.minshawimujawwad', 'ar.mahermuaiqly', 'ar.sudais',
+    'ar.shuraym', 'ar.ajamy', 'ar.shatri', 'ar.hudhaify', 'ar.muhammadayyoub',
+    'ar.muhammadjibreel', 'ar.hanirifai', 'ar.basfar', 'ar.ibrahimakhbar', 'ar.aymanswoaid',
+    'ar.ghamadi', 'ar.yasseraldossary', 'ar.nasseranalqatami', 'ar.faresabbad', 'ar.khalifahaltunaiji',
+    'ar.mahmoudalialbanna', 'ar.mustafaismail', 'ar.salahbukhatir', 'ar.tablawi'
   ];
   if (savedQari && allowedQaris.includes(savedQari)) {
     STATE.audio.selectedQari = savedQari;
@@ -1032,9 +1083,11 @@ playerQariSelect.value = STATE.audio.selectedQari;
 playerQariSelect.addEventListener('change', (e) => {
   const allowedQaris = [
     'ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdulsamad', 'ar.husary', 'ar.husarymujawwad',
-    'ar.minshawi', 'ar.minshawimujawwad', 'ar.mahermuaiqly', 'ar.abdurrahmaansudais', 'ar.saoodshuraym',
-    'ar.ahmedajamy', 'ar.shaatree', 'ar.hudhaify', 'ar.muhammadayyoub', 'ar.muhammadjibreel',
-    'ar.hanirifai', 'ar.abdullahbasfar', 'ar.ibrahimakhbar', 'ar.aymanswoaid'
+    'ar.husarymuallim', 'ar.minshawi', 'ar.minshawimujawwad', 'ar.mahermuaiqly', 'ar.sudais',
+    'ar.shuraym', 'ar.ajamy', 'ar.shatri', 'ar.hudhaify', 'ar.muhammadayyoub',
+    'ar.muhammadjibreel', 'ar.hanirifai', 'ar.basfar', 'ar.ibrahimakhbar', 'ar.aymanswoaid',
+    'ar.ghamadi', 'ar.yasseraldossary', 'ar.nasseranalqatami', 'ar.faresabbad', 'ar.khalifahaltunaiji',
+    'ar.mahmoudalialbanna', 'ar.mustafaismail', 'ar.salahbukhatir', 'ar.tablawi'
   ];
   if (!allowedQaris.includes(e.target.value)) return;
 
@@ -1205,7 +1258,14 @@ async function playFromPlaylist() {
 
 async function loadAyahAudio(globalNum) {
   const qari = STATE.audio.selectedQari;
-  const url = `https://cdn.islamic.network/quran/audio/128/${qari}/${globalNum}.mp3`;
+  const folder = QARI_FOLDERS[qari] || 'Alafasy_128kbps';
+  
+  const { surahNum, ayahNum } = getSurahAndAyahFromGlobal(globalNum);
+  const sStr = String(surahNum).padStart(3, '0');
+  const aStr = String(ayahNum).padStart(3, '0');
+  const filename = `${sStr}${aStr}.mp3`;
+  
+  const url = `https://everyayah.com/data/${folder}/${filename}`;
   const badge = document.getElementById('player-offline-badge');
 
   try {
