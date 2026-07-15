@@ -244,8 +244,10 @@
           </div>
 
           <!-- Verses panel -->
-          <div class="verses-panel">
-            <div class="verses-header" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 20px;">
+          <div class="verses-panel" style="position: relative;">
+            <button id="toggle-reader-controls-btn" class="floating-controls-btn" title="إظهار/إخفاء الخيارات">⚙️</button>
+            <div id="reader-controls-header">
+              <div class="verses-header" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 20px;">
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <div class="verses-title">
                   <h3 id="current-surah-title-header">سورة الفاتحة</h3>
@@ -319,8 +321,9 @@
                 </div>
               </div>
             </div>
-            
-            <div class="verses-container" id="verses-display-container">
+          </div>
+          
+          <div class="verses-container" id="verses-display-container">
               <!-- Dynamically loaded verses -->
               <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
                 الرجاء اختيار سورة من القائمة لعرض الآيات...

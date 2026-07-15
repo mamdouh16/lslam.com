@@ -2932,7 +2932,15 @@ function setupReaderExtraControls() {
   const fullscreenBtn = document.getElementById('reader-fullscreen-btn');
   const zoomInBtn = document.getElementById('reader-zoom-in-btn');
   const zoomOutBtn = document.getElementById('reader-zoom-out-btn');
+  const toggleControlsBtn = document.getElementById('toggle-reader-controls-btn');
   const versesPanel = document.querySelector('.verses-panel');
+
+  if (toggleControlsBtn && versesPanel) {
+    toggleControlsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      versesPanel.classList.toggle('controls-hidden');
+    });
+  }
 
   if (fullscreenBtn && versesPanel) {
     fullscreenBtn.addEventListener('click', () => {
@@ -2940,6 +2948,7 @@ function setupReaderExtraControls() {
         versesPanel.requestFullscreen()
           .then(() => {
             fullscreenBtn.querySelector('span').textContent = 'إغلاق ملء الشاشة 📴';
+            versesPanel.classList.add('controls-hidden');
           })
           .catch(err => console.error("Error entering fullscreen:", err));
       } else {
@@ -2950,6 +2959,7 @@ function setupReaderExtraControls() {
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
         fullscreenBtn.querySelector('span').textContent = 'ملء الشاشة 📺';
+        versesPanel.classList.remove('controls-hidden');
       }
     });
   }
