@@ -248,6 +248,15 @@
             <!-- Thin elegant title bar with Surah Name and ⋮ menu trigger centered together -->
             <div class="reader-thin-header">
               <h3 id="current-surah-title-header" style="font-size: 1.4rem; font-weight: 700; margin: 0; color: var(--text-primary);">سورة الفاتحة</h3>
+              
+              <!-- Memorize Blind Recitation mic and help trigger (shown only when memorizeMode is active) -->
+              <button class="action-btn hidden" id="memorize-mic-btn" style="padding: 6px 12px; font-size: 0.85rem; background: linear-gradient(135deg, var(--color-emerald), #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <span>ابدأ التسميع 🎙️</span>
+              </button>
+              <button class="action-btn hidden" id="memorize-help-btn" style="padding: 6px 10px; font-size: 0.85rem; border: 1px solid rgba(217, 119, 6, 0.3); color: var(--color-gold); background: none; border-radius: 8px; font-weight: 600; cursor: pointer;" title="دليل التسميع">
+                <span>دليل التسميع ℹ️</span>
+              </button>
+
               <button id="reader-menu-trigger" class="three-dots-btn" title="الخيارات والإعدادات">⋮</button>
             </div>
 
@@ -267,12 +276,6 @@
               <!-- Memorize Blind Recitation Mode -->
               <button class="dropdown-item-btn" id="toggle-memorize-btn">
                 <span>🎙️ تسميع غيبي</span>
-              </button>
-              <button class="dropdown-item-btn hidden" id="memorize-mic-btn" style="background: linear-gradient(135deg, var(--color-emerald), #059669); color: white;">
-                <span>🎙️ ابدأ التسميع</span>
-              </button>
-              <button class="dropdown-item-btn hidden" id="memorize-help-btn">
-                <span>ℹ️ دليل التسميع</span>
               </button>
               
               <div class="dropdown-divider"></div>

@@ -2067,7 +2067,9 @@ body:not(.mode-child) .quran-page-paper {
   border-bottom: 1px solid var(--glass-border) !important;
 }
 
-.verses-panel:fullscreen .three-dots-btn {
+.verses-panel:fullscreen .three-dots-btn,
+.verses-panel:fullscreen #memorize-mic-btn,
+.verses-panel:fullscreen #memorize-help-btn {
   display: none !important;
 }
 
