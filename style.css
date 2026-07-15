@@ -2060,6 +2060,13 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .reader-thin-header {
+  display: flex !important;
+  justify-content: center !important;
+  background: var(--bg-tertiary) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.verses-panel:fullscreen .three-dots-btn {
   display: none !important;
 }
 
@@ -2068,8 +2075,8 @@ body:not(.mode-child) .quran-page-paper {
 }
 
 .verses-panel:fullscreen .verses-container {
-  max-height: 100vh !important;
-  height: 100vh !important;
+  max-height: calc(100vh - 52px) !important;
+  height: calc(100vh - 52px) !important;
   overflow-y: auto !important;
   padding: 40px 48px 120px 48px !important;
   box-sizing: border-box !important;
