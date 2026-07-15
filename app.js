@@ -130,12 +130,10 @@ function initStorage() {
   // Validate settings against whitelisted values to prevent parameter injection
   const savedQari = localStorage.getItem('quran_memorizer_qari');
   const allowedQaris = [
-    'ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdulbasitmudjawwad', 'ar.husary', 'ar.husarymujawwad',
-    'ar.minshawi', 'ar.minshawimujawwad', 'ar.ghamadi', 'ar.mahermuaiqly', 'ar.sudais',
-    'ar.yasseraldossary', 'ar.nasseranalqatami', 'ar.faresabbad', 'ar.hazzaalblushi', 'ar.kurd',
-    'ar.ajamy', 'ar.shatri', 'ar.hudhaify', 'ar.shuraym', 'ar.muhammadayyoub',
-    'ar.jabreel', 'ar.rifai', 'ar.basfar', 'ar.khalifahaltunaiji', 'ar.mahmoudalialbanna',
-    'ar.mustafaismail', 'ar.salahbukhatir', 'ar.tablawi'
+    'ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdulsamad', 'ar.husary', 'ar.husarymujawwad',
+    'ar.minshawi', 'ar.minshawimujawwad', 'ar.mahermuaiqly', 'ar.abdurrahmaansudais', 'ar.saoodshuraym',
+    'ar.ahmedajamy', 'ar.shaatree', 'ar.hudhaify', 'ar.muhammadayyoub', 'ar.muhammadjibreel',
+    'ar.hanirifai', 'ar.abdullahbasfar', 'ar.ibrahimakhbar', 'ar.aymanswoaid'
   ];
   if (savedQari && allowedQaris.includes(savedQari)) {
     STATE.audio.selectedQari = savedQari;
@@ -1033,12 +1031,10 @@ const playerTafheemSelect = document.getElementById('player-tafheem-select');
 playerQariSelect.value = STATE.audio.selectedQari;
 playerQariSelect.addEventListener('change', (e) => {
   const allowedQaris = [
-    'ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdulbasitmudjawwad', 'ar.husary', 'ar.husarymujawwad',
-    'ar.minshawi', 'ar.minshawimujawwad', 'ar.ghamadi', 'ar.mahermuaiqly', 'ar.sudais',
-    'ar.yasseraldossary', 'ar.nasseranalqatami', 'ar.faresabbad', 'ar.hazzaalblushi', 'ar.kurd',
-    'ar.ajamy', 'ar.shatri', 'ar.hudhaify', 'ar.shuraym', 'ar.muhammadayyoub',
-    'ar.jabreel', 'ar.rifai', 'ar.basfar', 'ar.khalifahaltunaiji', 'ar.mahmoudalialbanna',
-    'ar.mustafaismail', 'ar.salahbukhatir', 'ar.tablawi'
+    'ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdulsamad', 'ar.husary', 'ar.husarymujawwad',
+    'ar.minshawi', 'ar.minshawimujawwad', 'ar.mahermuaiqly', 'ar.abdurrahmaansudais', 'ar.saoodshuraym',
+    'ar.ahmedajamy', 'ar.shaatree', 'ar.hudhaify', 'ar.muhammadayyoub', 'ar.muhammadjibreel',
+    'ar.hanirifai', 'ar.abdullahbasfar', 'ar.ibrahimakhbar', 'ar.aymanswoaid'
   ];
   if (!allowedQaris.includes(e.target.value)) return;
 
